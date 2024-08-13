@@ -79,16 +79,39 @@ class _ForgotPassword extends State<ForgotPassword> {
                       keyboardType: TextInputType.text,
                     ),
                   ),
+
+                    Container(
+                    padding: const  EdgeInsets.all(8.0),
+                    child: const  TextField(     
+                      style:  TextStyle(
+                        color: Colors.black , 
+                      ),
+                      decoration:  InputDecoration(
+                        hintText:'Date of Birth',
+                        hintStyle:  TextStyle(
+                          color:Colors.black
+                        ),
+                        prefixIcon:  Icon(Icons.date_range),
+                        prefixIconColor: Colors.black,
+                        filled: true,
+                        fillColor: Colors.white,
+                        focusedBorder: border,
+                        enabledBorder: border,
+                        ),
+                        
+                      keyboardType: TextInputType.datetime,
+                    ),
+                  ),
             
                    Container(
                     padding: const EdgeInsets.all(8.0) ,
                      child: TextButton(
                       onPressed: () {
-                        
+                        debugPrint('forgot password pressed');
                       },
                       style: TextButton.styleFrom(
-                        backgroundColor:Colors.purple,
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFB0BEC5),
+                        foregroundColor:  const Color.fromARGB(255, 11, 106, 14),
                         minimumSize: const Size(double.infinity, 50),
                       ),
                        child: const  Text('Click here to Forgot'),
