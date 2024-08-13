@@ -63,6 +63,8 @@ flutter:
     - lib/assets/3dDoctor.png
     - lib/assets/login.png
     - lib/assets/urbandoctors.gif
+    - lib/assets/forgot_password.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
