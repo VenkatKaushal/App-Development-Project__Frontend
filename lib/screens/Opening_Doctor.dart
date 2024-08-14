@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:global_health_insights/screens/Login_Screen.dart';
+import 'package:global_health_insights/screens/basic_user_info.dart';
 
 class OpeningDoctor extends StatelessWidget {
   const OpeningDoctor({super.key});
@@ -21,19 +23,22 @@ class OpeningDoctor extends StatelessWidget {
               letterSpacing: 2.0, // Space between letters
               wordSpacing: 5.0, // Space between words
               fontStyle: FontStyle.italic, // Italic text
-              shadows: [
-                Shadow(
-                  offset: Offset(2.0, 2.0), // Position of shadow
-                  blurRadius: 3.0, // Blur effect of shadow
-                  color: Colors.black.withOpacity(0.5), // Color of shadow
-                ),
-              ],
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(onPressed: (){}, child: Text("Login")),
+          ElevatedButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          }, child: Text("Login")),
           SizedBox(height: 20),
-          ElevatedButton(onPressed: (){}, child: Text("Signin")),
+          ElevatedButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BasicUserInfo()),
+            );
+          }, child: Text("Signin")),
         ]
       ),
     );

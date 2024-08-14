@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:global_health_insights/screens/home_page.dart';
 import 'package:global_health_insights/screens/sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,25 +28,28 @@ class _LoginScreenState extends State<LoginScreen> {
         elevation: 4.0, // Elevation for shadow effect
         shadowColor: Colors.black.withOpacity(0.5), // Shadow color
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20,),
-            Text("Welcome", textAlign: TextAlign.left, style: TextStyle(
-              fontSize: 40.0,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'Roboto',
-              color: Colors.blue,
-              letterSpacing: 0.5,
-              height: 1.5,
-            ),),
-            Text("Welcome! Log in to start tracking your nutrients and achieve your health goals."),
-            SizedBox(height: 50.0),
-            LoginForm(),
-            Image.asset("lib/assets/3dDoctor.png"),
-          ],
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20,),
+              Text("Welcome", textAlign: TextAlign.left, style: TextStyle(
+                fontSize: 40.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Roboto',
+                color: Colors.blue,
+                letterSpacing: 0.5,
+                height: 1.5,
+              ),),
+              Text("Welcome! Log in to start tracking your nutrients and achieve your health goals."),
+              SizedBox(height: 50.0),
+              LoginForm(),
+              Image.asset("lib/assets/3dDoctor.png"),
+            ],
+          ),
         ),
       ),
     );
@@ -121,7 +125,11 @@ class _LoginFormState extends State<LoginForm> {
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
                 _formKey.currentState?.save();
-                // Process login with _email and _password
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => home_page()),
+                );
               }
             },
             child: const Text('Login'),
