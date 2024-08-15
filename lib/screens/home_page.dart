@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_health_insights/screens/Login_Screen.dart';
-
+import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
 
 class home_page extends StatefulWidget {
@@ -18,10 +18,20 @@ class _home_pageState extends State<home_page> {
     setState(() {
       _selectedIndex = index;
       if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Nutricalc()),
-        );
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => ProfilePage(
+      userProfile: UserProfile(
+        userName: 'John Doe',
+        age: 25,
+        gender: 'Male',
+        weight: 70.0,
+        height: 175.0,
+      ),
+    ),
+  ),
+);
       }
     });
   }
@@ -67,7 +77,25 @@ class _home_pageState extends State<home_page> {
               ),
             ],
           ),
-          ProfileIcon(),
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                    userProfile: UserProfile(
+                      userName: 'John Doe',
+                      age: 25,
+                      gender: 'Male',
+                      weight: 70.0,
+                      height: 175.0,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
         centerTitle: true,
       ),
