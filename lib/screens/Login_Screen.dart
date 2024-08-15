@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:global_health_insights/screens/home_page.dart';
-import 'package:global_health_insights/screens/sign_in.dart';
+import 'home_page.dart';
+import 'sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:global_health_insights/screens/Login_Screen.dart';
-import 'package:global_health_insights/screens/Opening_Doctor.dart';
-import 'package:global_health_insights/screens/basic_user_info.dart';
-import 'package:global_health_insights/screens/home_page.dart';
+import 'screens/Login_Screen.dart';
+import 'screens/Opening_Doctor.dart';
+import 'screens/basic_user_info.dart';
+import 'screens/home_page.dart';
 
 
 void main(){

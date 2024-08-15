@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:global_health_insights/screens/Login_Screen.dart';
+import 'Login_Screen.dart';
 import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
 

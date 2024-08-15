@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:forget_password/CreateNewPassword.dart';
+import 'create_new_password.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
