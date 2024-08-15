@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:global_health_insights/screens/Login_Screen.dart';
 import 'package:global_health_insights/screens/basic_user_info.dart';
+import 'package:global_health_insights/screens/forgot_password.dart';
+
+import 'create_new_password.dart';
 
 class OpeningDoctor extends StatelessWidget {
   const OpeningDoctor({super.key});
@@ -39,6 +42,24 @@ class OpeningDoctor extends StatelessWidget {
               MaterialPageRoute(builder: (context) => BasicUserInfo()),
             );
           }, child: Text("Signin")),
+          SizedBox(height: 20,),
+          GestureDetector(
+            onTap: () {
+              // Navigate to the next page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ForgotPassword()),
+              );
+            },
+            child: Text(
+              'ForgotPassword?',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                decoration: TextDecoration.underline, // Optional: underline text
+              ),
+            ),
+          ),
         ]
       ),
     );

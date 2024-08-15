@@ -42,7 +42,14 @@ class _Nutricalcstate extends State<Nutricalc> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nutricalc'),
+        title: Text('Nutricalc',
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.yellow,
+            fontSize: 36
+          ),
+        ),
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

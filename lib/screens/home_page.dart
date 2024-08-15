@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_health_insights/screens/Login_Screen.dart';
 
+import 'Nutricalcfinal.dart';
+
 class home_page extends StatefulWidget {
   const home_page({super.key});
 
@@ -18,7 +20,7 @@ class _home_pageState extends State<home_page> {
       if (index == 1) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => Nutricalc()),
         );
       }
     });

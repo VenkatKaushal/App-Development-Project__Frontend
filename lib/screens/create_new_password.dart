@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:global_health_insights/screens/forgot_password.dart';
 
 class CreateNewPassword extends StatefulWidget {
    const CreateNewPassword({super.key});
@@ -58,7 +59,7 @@ class _CreateNewPassword extends State<CreateNewPassword> {
                   //  ),
             
             
-                  Image.asset("assets/forgot_password.png"),
+                  Image.asset("lib/assets/forgot_password.png"),
             
                   Container(
                     padding: const  EdgeInsets.all(8.0),
@@ -137,9 +138,6 @@ class _CreateNewPassword extends State<CreateNewPassword> {
                        
                        ),
                    )
-            
-            
-            
                 ],
                 ),
                  ),

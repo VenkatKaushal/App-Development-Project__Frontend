@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:global_health_insights/screens/create_new_password.dart';
 
 class ForgotPassword extends StatefulWidget {
    const ForgotPassword({super.key});
@@ -55,7 +56,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                   //  ),
             
             
-                  Image.asset("assets/forgot_password.png"),
+                  Image.asset("lib/assets/forgot_password.png"),
             
                   Container(
                     padding: const  EdgeInsets.all(8.0),
@@ -107,6 +108,10 @@ class _ForgotPassword extends State<ForgotPassword> {
                     padding: const EdgeInsets.all(8.0) ,
                      child: TextButton(
                       onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context)=> CreateNewPassword(),)
+                        );
                         debugPrint('forgot password pressed');
                       },
                       style: TextButton.styleFrom(
