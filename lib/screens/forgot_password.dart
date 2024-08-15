@@ -13,51 +13,62 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _userIdController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   void dispose() {
     _userIdController.dispose();
     _dobController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
   void _validateAndNavigate() {
-  final dateRegex = RegExp(r'^\d{2}-\d{2}-\d{4}$');
-  if (_userIdController.text.isEmpty || _dobController.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill in all fields.'),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } else if (!dateRegex.hasMatch(_dobController.text)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please enter a valid date in DD-MM-YYYY format.'),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } else {
-    final inputDate = DateFormat('dd-MM-yyyy').parse(_dobController.text);
-    final maxDate = DateTime(2024, 07, 31);
+    final dateRegex = RegExp(r'^\d{2}-\d{2}-\d{4}$');
+    final emailRegex = RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
 
-    if (inputDate.isAfter(maxDate)) {
+    if (_userIdController.text.isEmpty || _dobController.text.isEmpty || _emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('The date must be on or before 31-July-2024.'),
+          content: Text('Please fill in all fields.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (!emailRegex.hasMatch(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid email address.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (!dateRegex.hasMatch(_dobController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid date in DD-MM-YYYY format.'),
           backgroundColor: Colors.red,
         ),
       );
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CreateNewPassword()),
-      );
-      debugPrint('Navigation to Create New Password');
+      final inputDate = DateFormat('dd-MM-yyyy').parse(_dobController.text);
+      final maxDate = DateTime(2024, 07, 31);
+
+      if (inputDate.isAfter(maxDate)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('The date must be on or before 31-July-2024.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CreateNewPassword()),
+        );
+        debugPrint('Navigation to Create New Password');
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +149,26 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     FilteringTextInputFormatter.allow(RegExp(r'\d|-')),
                     LengthLimitingTextInputFormatter(10),
                   ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _emailController,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your Email',
+                    hintStyle: TextStyle(color: Colors.black),
+                    prefixIcon: Icon(Icons.email),
+                    prefixIconColor: Colors.black,
+                    filled: true,
+                    fillColor: Colors.white,
+                    focusedBorder: border,
+                    enabledBorder: border,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
               Container(
