@@ -174,4 +174,4 @@ enum Foods {
   final String label;
 }
 
-void main() => runApp(const MaterialApp(home: Nutricalc()));
+// void main() => runApp(const MaterialApp(home: Nutricalc()));
