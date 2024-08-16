@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  fl_chart: ^0.68.0
   intl: ^0.18.0 # or the latest version available
 
 
