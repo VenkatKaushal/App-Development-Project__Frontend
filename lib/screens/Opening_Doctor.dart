@@ -33,14 +33,14 @@ class OpeningDoctor extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => LoginScreen()),
             );
-          }, child: Text("Login")),
+          }, child: Text("LogIn")),
           SizedBox(height: 20),
           ElevatedButton(onPressed: (){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BasicUserInfo()),
             );
-          }, child: Text("Signin")),
+          }, child: Text("SignUp")),
           SizedBox(height: 20,),
           GestureDetector(
             onTap: () {
