@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'splash_screen.dart';
 
 class Nutricalc extends StatefulWidget {
+  const Nutricalc({super.key});
+
   @override
   _Nutricalcstate createState() => _Nutricalcstate();
 }
@@ -42,7 +45,7 @@ class _Nutricalcstate extends State<Nutricalc> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nutricalc',
+        title: const Text('Nutricalc',
         style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.yellow,
@@ -61,7 +64,7 @@ class _Nutricalcstate extends State<Nutricalc> {
                 return getSuggestions(controller);
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 1,
@@ -77,17 +80,20 @@ class _Nutricalcstate extends State<Nutricalc> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Your calculation logic
+                Navigator.push(
+                  context,
+              MaterialPageRoute(builder: (context) =>  SplashScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Calculate',
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
@@ -119,15 +125,15 @@ class _Nutricalcstate extends State<Nutricalc> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(day, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
+              Text(day, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
               Expanded(
                 child: ListView(
                   children: itemsPerCard[index]
                       .map((item) => ListTile(
-                            title: Text(item, style: TextStyle(fontSize: 16)),
+                            title: Text(item, style: const TextStyle(fontSize: 16)),
                             trailing: IconButton(
-                              icon: Icon(Icons.remove, color: Colors.red),
+                              icon: const Icon(Icons.remove, color: Colors.red),
                               onPressed: () {
                                 setState(() {
                                   itemsPerCard[index].remove(item);
@@ -168,4 +174,4 @@ enum Foods {
   final String label;
 }
 
-void main() => runApp(MaterialApp(home: Nutricalc()));
+void main() => runApp(const MaterialApp(home: Nutricalc()));
