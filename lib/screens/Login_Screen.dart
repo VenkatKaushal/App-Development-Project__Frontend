@@ -14,19 +14,19 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue, // Blue background color
-        centerTitle: true, // Center the title
+        backgroundColor: Colors.blue,
+        centerTitle: true,
         title: const Text(
           'Log In',
           style: TextStyle(
-            color: Colors.white, // White font color
-            fontSize: 24, // Font size
-            fontWeight: FontWeight.bold, // Bold font weight
-            letterSpacing: 1.5, // Letter spacing
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
           ),
         ),
-        elevation: 4.0, // Elevation for shadow effect
-        shadowColor: Colors.black.withOpacity(0.5), // Shadow color
+        elevation: 4.0,
+        shadowColor: Colors.black.withOpacity(0.5),
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -55,8 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -93,7 +91,10 @@ class _LoginFormState extends State<LoginForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               }
-              // Additional email validation can be added here
+              // Ensure the email is a valid Gmail address
+              if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(value)) {
+                return 'Please enter a valid Gmail address';
+              }
               return null;
             },
             onSaved: (value) {
@@ -113,6 +114,14 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your password';
+              }
+              // Ensure the password does not contain spaces
+              if (value.contains(' ')) {
+                return 'Password cannot contain spaces';
+              }
+              // Ensure the password is at least 7 characters long
+              if (value.length < 7) {
+                return 'Password must be at least 7 characters long';
               }
               return null;
             },
@@ -139,4 +148,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
