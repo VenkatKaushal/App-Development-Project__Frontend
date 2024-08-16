@@ -1,27 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-
-// Assuming UserProfile is already defined somewhere
-class UserProfile {
-  String userName;
-  int age;
-  String? gender;
-  double weight;
-  double height;
-
-  UserProfile({
-    required this.userName,
-    required this.age,
-    this.gender,
-    required this.weight,
-    required this.height,
-  });
-}
-
+// import 'global_data.dart'; // Ensure this file defines the UserData class
+import 'package:app_frontend/global_data.dart';
 class ProfilePage extends StatefulWidget {
-  UserProfile userProfile;
+  final UserData userData;
 
-  ProfilePage({super.key, required this.userProfile});
+  ProfilePage({super.key, required this.userData});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -41,10 +24,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditProfilePage(
-                    userProfile: widget.userProfile,
+                    userData: widget.userData,
                     onProfileUpdated: (updatedProfile) {
                       setState(() {
-                        widget.userProfile = updatedProfile;
+                        // Update the existing instance directly
+                        widget.userData.updateData(
+                          userName: updatedProfile.userName ?? '',
+                          age: updatedProfile.age ?? 0,
+                          gender: updatedProfile.gender ?? '',
+                          weight: updatedProfile.weight ?? 0.0,
+                          height: updatedProfile.height ?? 0.0,
+                        );
                       });
                     },
                   ),
@@ -75,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: Text(
-                'User Name: ${widget.userProfile.userName}',
+                'User Name: ${widget.userData.userName}',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -95,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: Text(
-                'Age: ${widget.userProfile.age}',
+                'Age: ${widget.userData.age}',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -115,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: Text(
-                'Gender: ${widget.userProfile.gender ?? 'Not specified'}',
+                'Gender: ${widget.userData.gender ?? 'Not specified'}',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -135,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: Text(
-                'Weight: ${widget.userProfile.weight} kg',
+                'Weight: ${widget.userData.weight} kg',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -155,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: Text(
-                'Height: ${widget.userProfile.height} cm',
+                'Height: ${widget.userData.height} cm',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -166,16 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-
-
+// Ensure this file defines the UserData class
 class EditProfilePage extends StatefulWidget {
-  final UserProfile userProfile;
-  final ValueChanged<UserProfile> onProfileUpdated;
+  final UserData userData;
+  final ValueChanged<UserData> onProfileUpdated;
 
   const EditProfilePage({
     super.key,
-    required this.userProfile,
+    required this.userData,
     required this.onProfileUpdated,
   });
 
@@ -184,30 +172,33 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController userNameController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController weightController = TextEditingController();
-  final TextEditingController heightController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
   String? selectedGender;
 
   @override
   void initState() {
     super.initState();
-    userNameController.text = widget.userProfile.userName;
-    ageController.text = widget.userProfile.age.toString();
-    weightController.text = widget.userProfile.weight.toString();
-    heightController.text = widget.userProfile.height.toString();
-    selectedGender = widget.userProfile.gender;
+    // Initialize the controllers and selectedGender
+    userNameController.text = widget.userData.userName ?? '';
+    ageController.text = widget.userData.age?.toString() ?? '';
+    weightController.text = widget.userData.weight?.toString() ?? '';
+    heightController.text = widget.userData.height?.toString() ?? '';
+    selectedGender = widget.userData.gender;
   }
 
   void _saveProfile() {
-    final updatedProfile = UserProfile(
-      userName: userNameController.text,
-      age: int.tryParse(ageController.text) ?? widget.userProfile.age,
-      gender: selectedGender,
-      weight: double.tryParse(weightController.text) ?? widget.userProfile.weight,
-      height: double.tryParse(heightController.text) ?? widget.userProfile.height,
-    );
+    final updatedProfile = UserData()
+      ..updateData(
+        userName: userNameController.text,
+        age: int.tryParse(ageController.text) ?? widget.userData.age ?? 0,
+        gender: selectedGender ?? '',
+        weight: double.tryParse(weightController.text) ?? widget.userData.weight ?? 0.0,
+        height: double.tryParse(heightController.text) ?? widget.userData.height ?? 0.0,
+      );
+
     widget.onProfileUpdated(updatedProfile);
     Navigator.of(context).pop();
   }
@@ -315,3 +306,4 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 }
+

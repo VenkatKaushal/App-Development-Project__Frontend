@@ -1,3 +1,4 @@
+import 'package:app_frontend/global_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:global_health_insights/screens/analysis_page.dart';
@@ -8,14 +9,13 @@ import 'analysis_page.dart';
 
 class home_page extends StatefulWidget {
   const home_page({super.key});
-
   @override
   State<home_page> createState() => _home_pageState();
 }
 
 class _home_pageState extends State<home_page> {
   int _currentIndex = 0;
-
+  UserData userData = UserData();
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -68,13 +68,7 @@ class _home_pageState extends State<home_page> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProfilePage(
-                            userProfile: UserProfile(
-                              userName: 'John Doe',
-                              age: 25,
-                              gender: 'Male',
-                              weight: 70.0,
-                              height: 175.0,
-                            ),
+                            userData: UserData(),
                           ),
                         ),
                       );
