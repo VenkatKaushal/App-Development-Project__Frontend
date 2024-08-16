@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// import 'package:global_health_insights/screens/analysis_page.dart';
 import 'Login_Screen.dart';
 import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
+import 'analysis_page.dart';
 
 class home_page extends StatefulWidget {
   const home_page({super.key});
@@ -12,61 +14,44 @@ class home_page extends StatefulWidget {
 }
 
 class _home_pageState extends State<home_page> {
-  int _selectedIndex = 0;
+  int _currentIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
-      if (index == 1) {
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => ProfilePage(
-      userProfile: UserProfile(
-        userName: 'John Doe',
-        age: 25,
-        gender: 'Male',
-        weight: 70.0,
-        height: 175.0,
-      ),
-    ),
-  ),
-);
-      }
+      _currentIndex = index;
     });
+
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Nutricalc()),
+        );
+        break;
+      // case 1:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => CalculatorPage()),
+      //   );
+      //   break;
+      // case 2:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => SettingsPage()),
+      //   );
+      //   break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        shadowColor: Color.fromARGB(255, 120, 119, 119),
-        backgroundColor: Colors.lightBlueAccent,
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                icon: Icon(Icons.search),
-                iconSize: 16,
-                onPressed: () {
-                  // Handle search button press
-                  print('Search button pressed');
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                iconSize: 16,
-                onPressed: () {
-                  // Handle settings button press
-                  print('Settings button pressed');
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
+        appBar: AppBar(
+                automaticallyImplyLeading: false,
+                shadowColor: const Color.fromARGB(255, 120, 119, 119),
+                backgroundColor: Colors.lightBlueAccent,
+                title: const Text(
                   'NutriGuide',
                   style: TextStyle(
                     fontSize: 30,
@@ -74,31 +59,29 @@ Navigator.push(
                     color: Color.fromARGB(255, 41, 192, 46),
                   ),
                 ),
-              ),
-            ],
-          ),
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    userProfile: UserProfile(
-                      userName: 'John Doe',
-                      age: 25,
-                      gender: 'Male',
-                      weight: 70.0,
-                      height: 175.0,
-                    ),
+                centerTitle: true, // This centers the title in the AppBar
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.person),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            userProfile: UserProfile(
+                              userName: 'John Doe',
+                              age: 25,
+                              gender: 'Male',
+                              weight: 70.0,
+                              height: 175.0,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              );
-            },
-          ),
-        ],
-        centerTitle: true,
-      ),
+                ],
+              ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
@@ -114,24 +97,27 @@ Navigator.push(
                   ),),
               ],
             ),
-            CardView(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle Check status action
-                      },
-                      child: Text('Check Status'),
-                    ),
-                  ),
-                  SizedBox(width: 10), // Optional spacing between buttons
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle Analysis action
+                        CardView(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Handle Check status action
+                                  },
+                                  child: Text('Check Status'),
+                                ),
+                              ),
+                              SizedBox(width: 10), // Optional spacing between buttons
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AnalysisPage()),
+                        );
                       },
                       child: Text('Analysis'),
                     ),
@@ -161,13 +147,13 @@ Navigator.push(
           BottomNavigationBarItem(
             icon: Icon(Icons.calculate),
             label: 'Calculator',
-          ),
+),
           BottomNavigationBarItem(
             icon: Icon(Icons.navigate_next),
             label: 'Next Page',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: _currentIndex,
         onTap: _onItemTapped,
       ),
     );
