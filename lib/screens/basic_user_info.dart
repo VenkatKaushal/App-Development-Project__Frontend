@@ -1,5 +1,8 @@
+import 'package:app_frontend/screens/create_new_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:app_frontend/global_data.dart';
+import 'create_new_password.dart';
 
 class BasicUserInfo extends StatefulWidget {
   const BasicUserInfo({super.key});
@@ -35,13 +38,26 @@ class _MyHomePageState extends State<BasicUserInfo> {
   }
 
   void _submitData() {
-    final userName = userNameController.text;
-    final age = int.tryParse(ageController.text);
-    final gender = selectedGender;
-    final weight = double.tryParse(weightController.text);
-    final height = double.tryParse(heightController.text);
+      final userName = userNameController.text;
+  final age = int.tryParse(ageController.text);
+  final gender = selectedGender;
+  final weight = double.tryParse(weightController.text);
+  final height = double.tryParse(heightController.text);
 
-     if(userName.isEmpty){
+  if(userName.isEmpty || age == null || weight == null || height == null || gender == null){
+    _showErrorDialog('Please fill all the fields correctly.');
+    return;
+  }
+
+  UserData().updateData(
+    userName: userName,
+    age: age,
+    gender: gender,
+    weight: weight,
+    height: height,
+  );
+
+    if(userName.isEmpty){
       _showErrorDialog('Enter your user name please');
       return;
     }
@@ -50,7 +66,10 @@ class _MyHomePageState extends State<BasicUserInfo> {
       _showErrorDialog('Age must be between 0 and 110.');
       return;
     }
-
+    if(gender!.isEmpty){
+      _showErrorDialog('Select your gender.');
+      return;
+    }
     if (weight == null || weight < 0 || weight > 250) {
       _showErrorDialog('Weight must be between 0 and 250 KGs.');
       return;
@@ -60,7 +79,6 @@ class _MyHomePageState extends State<BasicUserInfo> {
       _showErrorDialog('Height must be between 0 and 250 cm.');
       return;
     }
-
 
     showDialog(
       context: context,
@@ -76,7 +94,11 @@ class _MyHomePageState extends State<BasicUserInfo> {
           ),
         ],
       ),
-    );
+    ).then((_){
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context)=>CreateNewPassword()),
+      );
+    });
   }
 
   @override
