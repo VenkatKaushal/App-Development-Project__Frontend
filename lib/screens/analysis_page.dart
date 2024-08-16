@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 class AnalysisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Mock data for the nutrients in deficit (This can be dynamic from the backend)
+    final List<String> deficitNutrients = [
+      'Protein',
+      'Fat',
+      'Calcium',
+      'Iron',
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Analysis Page'),
@@ -85,6 +93,61 @@ class AnalysisPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 20),
+              // Suggestions Card Section
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Suggestions',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Displaying bullet points for each nutrient in deficit
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: deficitNutrients.map((nutrient) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "• ",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    height: 1.5,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Consider increasing your intake of $nutrient-rich foods.',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -150,8 +213,8 @@ class AnalysisPage extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: AnalysisPage(),
-  ));
-}
+// void main() {
+//   runApp(MaterialApp(
+//     home: AnalysisPage(),
+//   ));
+// }
