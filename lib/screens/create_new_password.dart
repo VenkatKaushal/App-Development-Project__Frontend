@@ -1,3 +1,4 @@
+import 'package:app_frontend/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 class CreateNewPassword extends StatefulWidget {
@@ -21,24 +22,56 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
     super.dispose();
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Invalid Input'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _validateAndSubmit() {
-    if (_newPasswordController.text != _confirmPasswordController.text) {
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      _showErrorDialog('Please enter your new password and confirm it.');
+      return;
+    }
+
+    if (newPassword.length < 7 || newPassword.contains(' ')) {
+      _showErrorDialog('Password must be at least 7 characters long and contain no spaces.');
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match!'),
           backgroundColor: Colors.red,
         ),
       );
-    } else {
-      // Handle password update logic here
-      debugPrint('Password updated successfully');
-      // You can navigate to another page or display a success message
+      return;
     }
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context)=>home_page()),
+      );
+    // Handle password update logic here
+
+    // You can navigate to another page or display a success message
   }
 
   @override
   Widget build(BuildContext context) {
-    const border = OutlineInputBorder(
+    const border = OutlineInputBorder( 
       borderRadius: BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(
         width: 2.0,
