@@ -41,6 +41,11 @@ class _MyHomePageState extends State<BasicUserInfo> {
     final weight = double.tryParse(weightController.text);
     final height = double.tryParse(heightController.text);
 
+     if(userName.isEmpty){
+      _showErrorDialog('Enter your user name please');
+      return;
+    }
+    
     if (age == null || age < 0 || age > 110) {
       _showErrorDialog('Age must be between 0 and 110.');
       return;
