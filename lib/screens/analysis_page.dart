@@ -767,6 +767,7 @@ Widget build(BuildContext context) {
     FlSpot(6, (requiredNutritionData.requiredTotalNutrition ?? 0) + 60),  // Example variation
   ];
 
+
   final List<String> deficitNutrients = [
     'Protein',
     'Fat',
@@ -801,14 +802,30 @@ Widget build(BuildContext context) {
                   lineBarsData: [
                     LineChartBarData(
                       spots: spots,
-                      isCurved: true,
+                      isCurved: false,
                       color: Colors.blue,
                       barWidth: 3,
                       dotData: FlDotData(show: true),  // Show plot points
                       belowBarData: BarAreaData(show: false),
                     ),
+                    LineChartBarData(
+                        spots: [
+                          FlSpot(1, 0),
+                          FlSpot(2, 2),
+                          FlSpot(3, 4),
+                          FlSpot(2.5, 6),
+                          FlSpot(4, 8),
+                          FlSpot(3, 10),
+                        ],
+                        isCurved: false,
+                        color: Colors.red,
+                        barWidth: 3,
+                        dotData: FlDotData(show: false),
+                      ),
                   ],
+                  
                 ),
+                
               ),
             ),
             SizedBox(height: 20),
