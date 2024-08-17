@@ -1,3 +1,4 @@
+import 'package:app_frontend/daily_nutrients.dart';
 import 'package:app_frontend/global_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'Login_Screen.dart';
 import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
 import 'analysis_page.dart';
+import 'package:app_frontend/required_nutrition.dart';
 
 class home_page extends StatefulWidget {
   const home_page({super.key});
@@ -16,6 +18,8 @@ class home_page extends StatefulWidget {
 class _home_pageState extends State<home_page> {
   int _currentIndex = 0;
   UserData userData = UserData();
+  RequiredNutritionData requiredNutritionData = RequiredNutritionData();
+  
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -187,6 +191,8 @@ class CardView extends StatefulWidget {
 
 class _CardViewState extends State<CardView> {
   final PageController _pageController = PageController();
+  NutritionData nutritionData = NutritionData();
+  RequiredNutritionData requiredNutritionData = RequiredNutritionData();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -211,9 +217,9 @@ class _CardViewState extends State<CardView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildMacroColumn('Carbohydrates', 50, 165, Colors.teal),
-                  _buildMacroColumn('Fat', 35, 65, Colors.purple),
-                  _buildMacroColumn('Protein', 65, 85, Colors.orange),
+                  _buildMacroColumn('Carbohydrates', nutritionData.dailyCarbohydrates, requiredNutritionData.requiredCarbohydrates, Colors.teal),
+                  _buildMacroColumn('Fat', nutritionData.dailyFat, requiredNutritionData.requiredFat, Colors.purple),
+                  _buildMacroColumn('Protein', nutritionData.dailyProtein, requiredNutritionData.requiredProtein, Colors.orange),
                 ],
               ),
               SizedBox(height: 16),
@@ -225,7 +231,7 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  Widget _buildMacroColumn(String name, int current, int total, Color color) {
+  Widget _buildMacroColumn(String name, double? current, double? total, Color color) {
     return Column(
       children: [
         Text(
@@ -243,7 +249,7 @@ class _CardViewState extends State<CardView> {
               height: 80,
               width: 80,
               child: CircularProgressIndicator(
-                value: current / total,
+                value: current! / total!,
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation(color),
                 backgroundColor: color.withOpacity(0.2),
@@ -367,7 +373,7 @@ class _ExerciseWidgetState extends State<ExerciseWidget> {
 
   void _increaseWorkout() {
     setState(() {
-      _workoutHours++;
+      if(_workoutHours <= 24)_workoutHours++;
     });
   }
 
