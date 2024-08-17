@@ -380,7 +380,367 @@ class _AnalysisPageState extends State<AnalysisPage> {
       }
     }
     else{
-
+      final age = userData.age!;
+      final weight = userData.weight!;
+      if (age > 0 && age <= 1) { 
+        if (weight >= 0 && weight <= 10){
+          requiredNutritionData.requiredProtein = 8;
+          requiredNutritionData.requiredCalcium = 300;
+          requiredNutritionData.requiredCarbohydrates = 100;
+          requiredNutritionData.requiredFiber = 0;
+          requiredNutritionData.requiredIron = 3;
+          requiredNutritionData.requiredVitaminA = 350;
+          requiredNutritionData.requiredVitaminD = 400;
+          requiredNutritionData.requiredVitaminE = 5;
+          requiredNutritionData.requiredvitaminB6 = 0.5;
+          requiredNutritionData.requiredFat = 100;
+        }
+        else{
+          requiredNutritionData.requiredProtein = 9;
+          requiredNutritionData.requiredCalcium = 320;
+          requiredNutritionData.requiredCarbohydrates = 110;
+          requiredNutritionData.requiredFiber = 0;
+          requiredNutritionData.requiredIron = 4;
+          requiredNutritionData.requiredVitaminA = 370;
+          requiredNutritionData.requiredVitaminD = 420;
+          requiredNutritionData.requiredVitaminE = 5.5;
+          requiredNutritionData.requiredvitaminB6 = 0.6;
+          requiredNutritionData.requiredFat = 100;
+        }
+      } 
+      else if (age > 1 && age <= 3) {
+        if(weight<10){
+          requiredNutritionData.requiredProtein = 8;
+          requiredNutritionData.requiredCalcium = 300;
+          requiredNutritionData.requiredCarbohydrates = 100;
+          requiredNutritionData.requiredFiber = 0;
+          requiredNutritionData.requiredIron = 3;
+          requiredNutritionData.requiredVitaminA = 350;
+          requiredNutritionData.requiredVitaminD = 400;
+          requiredNutritionData.requiredVitaminE = 5;
+          requiredNutritionData.requiredvitaminB6 = 0.5;
+          requiredNutritionData.requiredFat = 250;
+        }
+        else if (weight >= 10 && weight <= 14) {
+          requiredNutritionData.requiredProtein = 13;
+          requiredNutritionData.requiredCalcium = 500;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 15;
+          requiredNutritionData.requiredIron = 8;
+          requiredNutritionData.requiredVitaminA = 390;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 6;
+          requiredNutritionData.requiredvitaminB6 = 0.9;
+          requiredNutritionData.requiredFat = 300;
+        }else {
+          requiredNutritionData.requiredProtein = 14;
+          requiredNutritionData.requiredCalcium = 525;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 17;
+          requiredNutritionData.requiredIron = 9;
+          requiredNutritionData.requiredVitaminA = 400;
+          requiredNutritionData.requiredVitaminD = 620;
+          requiredNutritionData.requiredVitaminE = 7;
+          requiredNutritionData.requiredvitaminB6 = 1;
+          requiredNutritionData.requiredFat = 325;
+        } 
+      } 
+      else if (age > 3 && age <= 7) {
+        if (weight < 14) {
+          requiredNutritionData.requiredProtein = 14;
+          requiredNutritionData.requiredCalcium = 525;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 17;
+          requiredNutritionData.requiredIron = 9;
+          requiredNutritionData.requiredVitaminA = 400;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 7;
+          requiredNutritionData.requiredvitaminB6 = 1;
+          requiredNutritionData.requiredFat = 325;
+        }
+        else if (weight >= 14 && weight <= 19) {
+          requiredNutritionData.requiredProtein = 16;
+          requiredNutritionData.requiredCalcium = 550;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 20;
+          requiredNutritionData.requiredIron = 11;
+          requiredNutritionData.requiredVitaminA = 510;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 8;
+          requiredNutritionData.requiredvitaminB6 = 1.2;
+          requiredNutritionData.requiredFat = 350;
+        } else {
+          requiredNutritionData.requiredProtein = 19;
+          requiredNutritionData.requiredCalcium = 600;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 23;
+          requiredNutritionData.requiredIron = 13;
+          requiredNutritionData.requiredVitaminA = 570;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 9;
+          requiredNutritionData.requiredvitaminB6 = 1.3;
+          requiredNutritionData.requiredFat = 375;
+        }
+      } 
+      else if (age > 7 && age <= 9) {
+        if (weight < 19){
+          requiredNutritionData.requiredProtein = 19;
+          requiredNutritionData.requiredCalcium = 600;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 23;
+          requiredNutritionData.requiredIron = 13;
+          requiredNutritionData.requiredVitaminA = 570;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 9;
+          requiredNutritionData.requiredvitaminB6 = 1.3;
+          requiredNutritionData.requiredFat = 375;
+        }
+        else if (weight >= 19 && weight <= 28) {
+          requiredNutritionData.requiredProtein = 23;
+          requiredNutritionData.requiredCalcium = 650;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 26;
+          requiredNutritionData.requiredIron = 15;
+          requiredNutritionData.requiredVitaminA = 630;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 1.5;
+          requiredNutritionData.requiredFat = 375;
+        } else {
+          requiredNutritionData.requiredProtein = 27;
+          requiredNutritionData.requiredCalcium = 750;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 28;
+          requiredNutritionData.requiredIron = 15;
+          requiredNutritionData.requiredVitaminA = 700;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 1.7;
+          requiredNutritionData.requiredFat = 375;
+        }
+      } 
+      else if (age > 9 && age <= 12) {
+        if(weight < 28){
+          requiredNutritionData.requiredProtein = 27;
+          requiredNutritionData.requiredCalcium = 750;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 28;
+          requiredNutritionData.requiredIron = 15;
+          requiredNutritionData.requiredVitaminA = 700;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 1.7;
+          requiredNutritionData.requiredFat = 380;
+        }
+        if (weight >= 28 && weight <= 36) {
+          requiredNutritionData.requiredProtein = 33;
+          requiredNutritionData.requiredCalcium = 850;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 30;
+          requiredNutritionData.requiredIron = 28;
+          requiredNutritionData.requiredVitaminA = 790;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 1.9;
+          requiredNutritionData.requiredFat = 400;
+        } else {
+          requiredNutritionData.requiredProtein = 38;
+          requiredNutritionData.requiredCalcium = 925;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 33;
+          requiredNutritionData.requiredIron = 29;
+          requiredNutritionData.requiredVitaminA = 845;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 2.1;
+          requiredNutritionData.requiredFat = 420;
+        }
+      } 
+      else if (age > 12 && age <= 15) {
+        if(weight <= 35){
+          requiredNutritionData.requiredProtein = 38;
+          requiredNutritionData.requiredCalcium = 925;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 33;
+          requiredNutritionData.requiredIron = 29;
+          requiredNutritionData.requiredVitaminA = 845;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 2.1;
+          requiredNutritionData.requiredFat = 420;
+        }
+        else if (weight >= 35 && weight <= 50) {
+          requiredNutritionData.requiredProtein = 43;
+          requiredNutritionData.requiredCalcium = 1000;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 36;
+          requiredNutritionData.requiredIron = 30;
+          requiredNutritionData.requiredVitaminA = 890;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 2.2;
+          requiredNutritionData.requiredFat = 500;
+        } else {
+          requiredNutritionData.requiredProtein = 44.5;
+          requiredNutritionData.requiredCalcium = 1025;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 37;
+          requiredNutritionData.requiredIron = 31;
+          requiredNutritionData.requiredVitaminA = 875;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 2.25;
+          requiredNutritionData.requiredFat = 525;
+        }
+      } 
+      else if (age > 15 && age <= 18) {
+        if (weight < 46){
+          requiredNutritionData.requiredProtein = 44.5;
+          requiredNutritionData.requiredCalcium = 1025;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 37;
+          requiredNutritionData.requiredIron = 31;
+          requiredNutritionData.requiredVitaminA = 875;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 11;
+          requiredNutritionData.requiredvitaminB6 = 2.25;
+          requiredNutritionData.requiredFat = 525;
+        }
+        else if (weight >= 46 && weight <= 55) {
+          requiredNutritionData.requiredProtein = 46;
+          requiredNutritionData.requiredCalcium = 1050;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 32;
+          requiredNutritionData.requiredVitaminA = 860;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.3;
+          requiredNutritionData.requiredFat = 550;
+        } else {
+          requiredNutritionData.requiredProtein = 47;
+          requiredNutritionData.requiredCalcium = 1075;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 32;
+          requiredNutritionData.requiredVitaminA = 840;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.3;
+          requiredNutritionData.requiredFat = 600;
+        }
+      } 
+      else if (age > 18 && age <= 30) {
+        if(weight < 45){
+          requiredNutritionData.requiredProtein = weight*0.9;
+          requiredNutritionData.requiredCalcium = 1100;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 32;
+          requiredNutritionData.requiredVitaminA = 840;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.3;
+          requiredNutritionData.requiredFat = 450;
+        }
+        if (weight >= 45 && weight <= 70) {
+          requiredNutritionData.requiredProtein = weight*0.9;
+          requiredNutritionData.requiredCalcium = 1100;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 33;
+          requiredNutritionData.requiredVitaminA = 840;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.3;
+          requiredNutritionData.requiredFat = 450;
+        } else {
+          requiredNutritionData.requiredProtein = weight*0.9;
+          requiredNutritionData.requiredCalcium = 1100;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 31;
+          requiredNutritionData.requiredVitaminA = 850;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.3;
+          requiredNutritionData.requiredFat = 450;
+        }
+      }
+      else if(age > 30 && age <= 50){
+        if(weight<50){
+          requiredNutritionData.requiredProtein = weight*0.85;
+          requiredNutritionData.requiredCalcium = 1300;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 30;
+          requiredNutritionData.requiredVitaminA = 800;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.0;
+          requiredNutritionData.requiredFat = 450;
+        }
+        else if (weight >= 50 && weight <= 80) {
+          requiredNutritionData.requiredProtein = weight*0.85;
+          requiredNutritionData.requiredCalcium = 1300;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 30;
+          requiredNutritionData.requiredVitaminA = 800;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.0;
+          requiredNutritionData.requiredFat = 450;
+        } else {
+          requiredNutritionData.requiredProtein = weight*0.85;
+          requiredNutritionData.requiredCalcium = 1300;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 29;
+          requiredNutritionData.requiredVitaminA = 800;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 2.0;
+          requiredNutritionData.requiredFat = 450;
+        }
+      }
+      else if(age > 50){
+        if(weight<55){
+          requiredNutritionData.requiredProtein = weight*0.8;
+          requiredNutritionData.requiredCalcium = 1100;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 38;
+          requiredNutritionData.requiredIron = 18;
+          requiredNutritionData.requiredVitaminA = 750;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 1.3;
+          requiredNutritionData.requiredFat = 500;
+        }
+        else if (weight >= 55 && weight <= 85) {
+          requiredNutritionData.requiredProtein = weight*0.8;
+          requiredNutritionData.requiredCalcium = 1200;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 35;
+          requiredNutritionData.requiredIron = 20;
+          requiredNutritionData.requiredVitaminA = 750;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 1.3;
+          requiredNutritionData.requiredFat = 500;
+        } else {
+          requiredNutritionData.requiredProtein = weight*0.8;
+          requiredNutritionData.requiredCalcium = 1200;
+          requiredNutritionData.requiredCarbohydrates = 130;
+          requiredNutritionData.requiredFiber = 35;
+          requiredNutritionData.requiredIron = 22;
+          requiredNutritionData.requiredVitaminA = 775;
+          requiredNutritionData.requiredVitaminD = 600;
+          requiredNutritionData.requiredVitaminE = 15;
+          requiredNutritionData.requiredvitaminB6 = 1.3;
+          requiredNutritionData.requiredFat = 500;
+        }
+      }
     }
 
     requiredNutritionData.requiredTotalNutrition = (requiredNutritionData.requiredProtein ?? 0) * 4 +
