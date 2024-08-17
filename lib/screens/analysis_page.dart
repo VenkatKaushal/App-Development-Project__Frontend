@@ -1,3 +1,4 @@
+import 'package:app_frontend/daily_nutrients.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:app_frontend/required_nutrition.dart';
@@ -10,6 +11,7 @@ class AnalysisPage extends StatefulWidget {
 
 class _AnalysisPageState extends State<AnalysisPage> {
   RequiredNutritionData requiredNutritionData = RequiredNutritionData();
+  NutritionData nutritionData = NutritionData();
   UserData userData = UserData();
 
   @override
@@ -767,13 +769,14 @@ Widget build(BuildContext context) {
     FlSpot(6, (requiredNutritionData.requiredTotalNutrition ?? 0) + 60),  // Example variation
   ];
 
-
   final List<String> deficitNutrients = [
     'Protein',
     'Fat',
     'Calcium',
     'Iron',
   ];
+
+  
 
   return Scaffold(
     appBar: AppBar(
@@ -802,30 +805,14 @@ Widget build(BuildContext context) {
                   lineBarsData: [
                     LineChartBarData(
                       spots: spots,
-                      isCurved: false,
+                      isCurved: true,
                       color: Colors.blue,
                       barWidth: 3,
                       dotData: FlDotData(show: true),  // Show plot points
                       belowBarData: BarAreaData(show: false),
                     ),
-                    LineChartBarData(
-                        spots: [
-                          FlSpot(1, 0),
-                          FlSpot(2, 2),
-                          FlSpot(3, 4),
-                          FlSpot(2.5, 6),
-                          FlSpot(4, 8),
-                          FlSpot(3, 10),
-                        ],
-                        isCurved: false,
-                        color: Colors.red,
-                        barWidth: 3,
-                        dotData: FlDotData(show: false),
-                      ),
                   ],
-                  
                 ),
-                
               ),
             ),
             SizedBox(height: 20),
@@ -852,16 +839,17 @@ Widget build(BuildContext context) {
                     Divider(),
                     // Data Rows
                     buildDataRow('Calories', '500 IU', '5000 IU', '4500 IU'),
-                    buildDataRow('Protein', '${requiredNutritionData.requiredProtein ?? 0}g', '40g', '20g'),
-                    buildDataRow('Carbs', '${requiredNutritionData.requiredCarbohydrates ?? 0}g', '200g', '100g'),
-                    buildDataRow('Fat', '${requiredNutritionData.requiredFat ?? 0}kcal', '70g', '55g'),
-                    buildDataRow('Fiber', '${requiredNutritionData.requiredFiber ?? 0}g', '30g', '25g'),
-                    buildDataRow('Calcium', '${requiredNutritionData.requiredCalcium ?? 0}mg', '1000mg', '700mg'),
-                    buildDataRow('Iron', '${requiredNutritionData.requiredIron ?? 0}mg', '18mg', '14mg'),
-                    buildDataRow('Vitamin A', '${requiredNutritionData.requiredVitaminA ?? 0} microg', '5000 IU', '4500 IU'),
-                    buildDataRow('Vitamin B6', '${requiredNutritionData.requiredvitaminB6 ?? 0} mg', '5000 IU', '4500 IU'),
-                    buildDataRow('Vitamin D', '${requiredNutritionData.requiredVitaminD ?? 0} IU', '5000 IU', '4500 IU'),
-                    buildDataRow('Vitamin E', '${requiredNutritionData.requiredVitaminE ?? 0} microg', '5000 IU', '4500 IU'),
+buildDataRow('Protein', '${requiredNutritionData.requiredProtein ?? 0}g', '${nutritionData.dailyProtein ?? 0}g', '${(requiredNutritionData.requiredProtein ?? 0) - (nutritionData.dailyProtein ?? 0)}g'),
+buildDataRow('Carbs', '${requiredNutritionData.requiredCarbohydrates ?? 0}g', '${nutritionData.dailyCarbohydrates ?? 0}g', '${(requiredNutritionData.requiredCarbohydrates ?? 0) - (nutritionData.dailyCarbohydrates ?? 0)}g'),
+buildDataRow('Fat', '${requiredNutritionData.requiredFat ?? 0}kcal', '${nutritionData.dailyFat ?? 0}kcal', '${(requiredNutritionData.requiredFat ?? 0) - (nutritionData.dailyFat ?? 0)}kcal'),
+buildDataRow('Fiber', '${requiredNutritionData.requiredFiber ?? 0}g', '${nutritionData.dailyFiber ?? 0}g', '${(requiredNutritionData.requiredFiber ?? 0) - (nutritionData.dailyFiber ?? 0)}g'),
+buildDataRow('Calcium', '${requiredNutritionData.requiredCalcium ?? 0}mg', '${nutritionData.dailyCalcium ?? 0}mg', '${(requiredNutritionData.requiredCalcium ?? 0) - (nutritionData.dailyCalcium ?? 0)}mg'),
+buildDataRow('Iron', '${requiredNutritionData.requiredIron ?? 0}mg', '${nutritionData.dailyIron ?? 0}mg', '${(requiredNutritionData.requiredIron ?? 0) - (nutritionData.dailyIron ?? 0)}mg'),
+buildDataRow('Vitamin A', '${requiredNutritionData.requiredVitaminA ?? 0} microg', '${nutritionData.dailyVitaminA ?? 0}microg', '${(requiredNutritionData.requiredVitaminA ?? 0) - (nutritionData.dailyVitaminA ?? 0)}microg'),
+buildDataRow('Vitamin B6', '${requiredNutritionData.requiredvitaminB6 ?? 0} mg', '${nutritionData.dailyVitaminB6 ?? 0}mg', '${(requiredNutritionData.requiredvitaminB6 ?? 0) - (nutritionData.dailyVitaminB6 ?? 0)}mg'),
+buildDataRow('Vitamin D', '${requiredNutritionData.requiredVitaminD ?? 0} IU', '${nutritionData.dailyVitaminD ?? 0}IU', '${(requiredNutritionData.requiredVitaminD ?? 0) - (nutritionData.dailyVitaminD ?? 0)}IU'),
+buildDataRow('Vitamin E', '${requiredNutritionData.requiredVitaminE ?? 0} microg', '${nutritionData.dailyVitaminE ?? 0}microg', '${(requiredNutritionData.requiredVitaminE ?? 0) - (nutritionData.dailyVitaminE ?? 0)}microg'),
+
                   ],
                 ),
               ),

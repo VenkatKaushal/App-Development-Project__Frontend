@@ -217,9 +217,9 @@ class _CardViewState extends State<CardView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildMacroColumn('Carbohydrates', nutritionData.dailyCarbohydrates, requiredNutritionData.requiredCarbohydrates, Colors.teal),
-                  _buildMacroColumn('Fat', nutritionData.dailyFat, requiredNutritionData.requiredFat, Colors.purple),
-                  _buildMacroColumn('Protein', nutritionData.dailyProtein, requiredNutritionData.requiredProtein, Colors.orange),
+                  _buildMacroColumn('Carbohydrates', nutritionData.dailyCarbohydrates ?? 0, requiredNutritionData.requiredCarbohydrates ?? 0, Colors.teal),
+                  _buildMacroColumn('Fat', nutritionData.dailyFat?? 0, requiredNutritionData.requiredFat ?? 0, Colors.purple),
+                  _buildMacroColumn('Protein', nutritionData.dailyProtein?? 0, requiredNutritionData.requiredProtein ?? 0, Colors.orange),
                 ],
               ),
               SizedBox(height: 16),
@@ -231,7 +231,7 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  Widget _buildMacroColumn(String name, double? current, double? total, Color color) {
+  Widget _buildMacroColumn(String name, double current, double total, Color color) {
     return Column(
       children: [
         Text(
@@ -249,7 +249,7 @@ class _CardViewState extends State<CardView> {
               height: 80,
               width: 80,
               child: CircularProgressIndicator(
-                value: current! / total!,
+                value: current,
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation(color),
                 backgroundColor: color.withOpacity(0.2),
