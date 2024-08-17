@@ -1,10 +1,70 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:app_frontend/required_nutrition.dart';
+import 'package:app_frontend/global_data.dart';
 
-class AnalysisPage extends StatelessWidget {
+class AnalysisPage extends StatefulWidget {
+  @override
+  _AnalysisPageState createState() => _AnalysisPageState();
+}
+
+class _AnalysisPageState extends State<AnalysisPage> {
+  RequiredNutritionData requiredNutritionData = RequiredNutritionData();
+  UserData userData = UserData();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if(userData.gender ==  'Male'){
+      final age = userData.age!;
+      final wi = userData.weight!;
+      if(age > 0 && age <= 1){
+        
+      }
+      else if(age > 1 && age <= 3){
+
+      }
+      else if(age > 3 && age <= 7){
+
+      }
+      else if(age > 7 && age <= 9){
+
+      }
+      else if(age > 9 && age <= 12){
+
+      }
+      else if(age > 12 && age <= 15){
+
+      }
+      else if(age > 15 && age <= 18){
+
+      }
+      else if(age > 18 && age <= 30){
+
+      }
+      else if(age > 30 && age <= 50){
+
+      }
+      else if(age > 50){
+
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Mock data for the nutrients in deficit (This can be dynamic from the backend)
+    // Access data from singleton instances
+    final List<FlSpot> spots = [
+      FlSpot(0, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(1, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(2, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(3, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(4, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(5, requiredNutritionData.requiredTotalNutrition ?? 0),
+      FlSpot(6, requiredNutritionData.requiredTotalNutrition ?? 0),
+    ];
+
     final List<String> deficitNutrients = [
       'Protein',
       'Fat',
@@ -33,19 +93,12 @@ class AnalysisPage extends StatelessWidget {
                     titlesData: FlTitlesData(show: true),
                     borderData: FlBorderData(show: true),
                     minX: 0,
-                    maxX: 10,
+                    maxX: 9,
                     minY: 0,
-                    maxY: 6,
+                    maxY: 100, // Adjust based on your data range
                     lineBarsData: [
                       LineChartBarData(
-                        spots: [
-                          FlSpot(0, 1),
-                          FlSpot(2, 2),
-                          FlSpot(4, 3),
-                          FlSpot(6, 2.5),
-                          FlSpot(8, 4),
-                          FlSpot(10, 3),
-                        ],
+                        spots: spots,
                         isCurved: true,
                         color: Colors.blue,
                         barWidth: 3,
@@ -78,17 +131,17 @@ class AnalysisPage extends StatelessWidget {
                       ),
                       Divider(),
                       // Data Rows
-                      buildDataRow('Protein', '20g', '40g', '20g'),
-                      buildDataRow('Carbs', '100g', '200g', '100g'),
-                      buildDataRow('Fat', '15g', '70g', '55g'),
-                      buildDataRow('Fiber', '5g', '30g', '25g'),
-                      buildDataRow('Sugars', '10g', '50g', '40g'),
-                      buildDataRow('Cholesterol', '30mg', '300mg', '270mg'),
-                      buildDataRow('Sodium', '200mg', '2300mg', '2100mg'),
-                      buildDataRow('Calcium', '300mg', '1000mg', '700mg'),
-                      buildDataRow('Iron', '4mg', '18mg', '14mg'),
-                      buildDataRow('Vitamin A', '500 IU', '5000 IU', '4500 IU'),
-                      buildDataRow('Vitamin C', '60mg', '90mg', '30mg'),
+                      buildDataRow('Calories', '500 IU', '5000 IU', '4500 IU'),
+                      buildDataRow('Protein', '${requiredNutritionData.requiredProtein ?? 0}g', '40g', '20g'),
+                      buildDataRow('Carbs', '${requiredNutritionData.requiredCarbohydrates ?? 0}g', '200g', '100g'),
+                      buildDataRow('Fat', '${requiredNutritionData.requiredFat ?? 0}g', '70g', '55g'),
+                      buildDataRow('Fiber', '${requiredNutritionData.requiredFiber ?? 0}g', '30g', '25g'),
+                      buildDataRow('Calcium', '${requiredNutritionData.requiredCalcium ?? 0}mg', '1000mg', '700mg'),
+                      buildDataRow('Iron', '${requiredNutritionData.requiredIron ?? 0}mg', '18mg', '14mg'),
+                      buildDataRow('Vitamin A', '${requiredNutritionData.requiredVitaminA ?? 0} IU', '5000 IU', '4500 IU'),
+                      buildDataRow('Vitamin B6', '${requiredNutritionData.requiredvitaminB6 ?? 0} IU', '5000 IU', '4500 IU'),
+                      buildDataRow('Vitamin D', '${requiredNutritionData.requiredVitaminD ?? 0} IU', '5000 IU', '4500 IU'),
+                      buildDataRow('Vitamin E', '${requiredNutritionData.requiredVitaminE ?? 0} IU', '5000 IU', '4500 IU'),
                     ],
                   ),
                 ),
@@ -212,9 +265,3 @@ class AnalysisPage extends StatelessWidget {
     );
   }
 }
-
-// void main() {
-//   runApp(MaterialApp(
-//     home: AnalysisPage(),
-//   ));
-// }
