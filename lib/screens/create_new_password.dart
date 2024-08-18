@@ -9,64 +9,20 @@ class CreateNewPassword extends StatefulWidget {
 }
 
 class _CreateNewPasswordState extends State<CreateNewPassword> {
-  bool obt = true;
-  bool obt2 = true;
 
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+
+
 
   @override
   void dispose() {
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
+
     super.dispose();
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Invalid Input'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _validateAndSubmit() {
-    final newPassword = _newPasswordController.text;
-    final confirmPassword = _confirmPasswordController.text;
 
-    if (newPassword.isEmpty || confirmPassword.isEmpty) {
-      _showErrorDialog('Please enter your new password and confirm it.');
-      return;
-    }
-
-    if (newPassword.length < 7 || newPassword.contains(' ')) {
-      _showErrorDialog('Password must be at least 7 characters long and contain no spaces.');
-      return;
-    }
-
-    if (newPassword != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Passwords do not match!'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context)=>home_page()),
-      );
-    // Handle password update logic here
-
-    // You can navigate to another page or display a success message
   }
 
   @override
@@ -106,66 +62,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset("lib/assets/forgot_password.png"),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _newPasswordController,
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  obscureText: obt,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Your New Password',
-                    hintStyle: const TextStyle(color: Colors.black),
-                    prefixIcon: const Icon(Icons.password_sharp),
-                    prefixIconColor: Colors.black,
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          obt = !obt;
-                        });
-                      },
-                      icon: const Icon(Icons.remove_red_eye),
-                    ),
-                    suffixIconColor: Colors.black,
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: border,
-                    enabledBorder: border,
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _confirmPasswordController,
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  obscureText: obt2,
-                  decoration: InputDecoration(
-                    hintText: 'Confirm Password',
-                    hintStyle: const TextStyle(color: Colors.black),
-                    prefixIcon: const Icon(Icons.password_sharp),
-                    prefixIconColor: Colors.black,
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          obt2 = !obt2;
-                        });
-                      },
-                      icon: const Icon(Icons.remove_red_eye),
-                    ),
-                    suffixIconColor: Colors.black,
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: border,
-                    enabledBorder: border,
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                ),
-              ),
+
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: TextButton(
