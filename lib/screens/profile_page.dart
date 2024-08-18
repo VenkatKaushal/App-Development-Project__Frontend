@@ -30,6 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Update the existing instance directly
                         widget.userData.updateData(
                           userName: updatedProfile.userName ?? '',
+                          email: updatedProfile.email ?? ' ',
+                          password: updatedProfile.password ?? ' ',
                           age: updatedProfile.age ?? 0,
                           gender: updatedProfile.gender ?? '',
                           weight: updatedProfile.weight ?? 0.0,
@@ -173,6 +175,8 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController userNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController weightController = TextEditingController();
   TextEditingController heightController = TextEditingController();
@@ -183,6 +187,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     // Initialize the controllers and selectedGender
     userNameController.text = widget.userData.userName ?? '';
+    emailController.text = widget.userData.email ?? '';
+    passwordController.text = widget.userData.password ?? '';
     ageController.text = widget.userData.age?.toString() ?? '';
     weightController.text = widget.userData.weight?.toString() ?? '';
     heightController.text = widget.userData.height?.toString() ?? '';
@@ -193,6 +199,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final updatedProfile = UserData()
       ..updateData(
         userName: userNameController.text,
+        email: emailController.text,
+        password: passwordController.text,
         age: int.tryParse(ageController.text) ?? widget.userData.age ?? 0,
         gender: selectedGender ?? '',
         weight: double.tryParse(weightController.text) ?? widget.userData.weight ?? 0.0,

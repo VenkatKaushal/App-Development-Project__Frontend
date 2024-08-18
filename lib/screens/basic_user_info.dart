@@ -2,7 +2,12 @@ import 'package:app_frontend/screens/create_new_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app_frontend/global_data.dart';
+import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'create_new_password.dart';
+import 'home_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BasicUserInfo extends StatefulWidget {
   const BasicUserInfo({super.key});
@@ -14,6 +19,8 @@ class BasicUserInfo extends StatefulWidget {
 class _MyHomePageState extends State<BasicUserInfo> {
   // Separate controllers for each TextField
   final TextEditingController userNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
@@ -37,39 +44,52 @@ class _MyHomePageState extends State<BasicUserInfo> {
     );
   }
 
-  void _submitData() {
-      final userName = userNameController.text;
-  final age = int.tryParse(ageController.text);
-  final gender = selectedGender;
-  final weight = double.tryParse(weightController.text);
-  final height = double.tryParse(heightController.text);
+  void _submitData() async {
+    final userName = userNameController.text;
+    final email = emailController.text;
+    final password = passwordController.text;
+    final age = int.tryParse(ageController.text);
+    final gender = selectedGender;
+    final weight = double.tryParse(weightController.text);
+    final height = double.tryParse(heightController.text);
 
-  if(userName.isEmpty || age == null || weight == null || height == null || gender == null){
-    _showErrorDialog('Please fill all the fields correctly.');
-    return;
-  }
-
-  UserData().updateData(
-    userName: userName,
-    age: age,
-    gender: gender,
-    weight: weight,
-    height: height,
-  );
-
-    if(userName.isEmpty){
+    if (userName.isEmpty) {
       _showErrorDialog('Enter your user name please');
       return;
     }
-    
+
+    if (email.isEmpty) {
+      _showErrorDialog('Please enter your email');
+      return;
+    }
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(email)) {
+      _showErrorDialog('Please enter a valid Gmail address');
+      return;
+    }
+
+    if (password.isEmpty) {
+      _showErrorDialog('Please enter your password');
+      return;
+    }
+    if (password.contains(' ')) {
+      _showErrorDialog('Password cannot contain spaces');
+      return;
+    }
+    if (password.length < 7) {
+      _showErrorDialog('Password must be at least 7 characters long');
+      return;
+    }
+
     if (age == null || age < 0 || age > 110) {
       _showErrorDialog('Age must be between 0 and 110.');
       return;
     }
-    if(gender!.isEmpty){
+
+    if (gender == null || gender.isEmpty) {
       _showErrorDialog('Select your gender.');
       return;
     }
+
     if (weight == null || weight < 0 || weight > 250) {
       _showErrorDialog('Weight must be between 0 and 250 KGs.');
       return;
@@ -80,25 +100,72 @@ class _MyHomePageState extends State<BasicUserInfo> {
       return;
     }
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Submitted Data'),
-        content: Text(
-          'User Name: $userName\nAge: $age\nGender: $gender\nWeight: $weight kg\nHeight: $height cm',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    ).then((_){
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context)=>CreateNewPassword()),
+    try {
+      print("Body: ${userName}, ${email}, ${password}");
+      final registerResponse = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'username': userName,
+          'email': email,
+          'password': password,
+        }),
       );
-    });
+      print("Come out of register need to check statusCode ${registerResponse.statusCode}");
+      if (registerResponse.statusCode == 201 || registerResponse.statusCode == 200) {
+        print("StatusCode: ${registerResponse.statusCode}");
+        final registerData = json.decode(registerResponse.body);
+        final token = registerData['token'];
+
+        await storeToken(token);
+
+        final profileResponse = await http.put(
+          Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+          body: json.encode({
+            'username': userName,
+            'email': email,
+            'age': age,
+            'password': password,
+            'gender': gender,
+            'weight': weight,
+            'height': height,
+          }),
+        );
+
+        if (profileResponse.statusCode == 200) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Success'),
+              content: const Text('User registered and profile updated successfully.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => home_page()),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          _showErrorDialog('Failed to update profile.');
+        }
+      } else {
+        _showErrorDialog('Failed to register user.');
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred. Please try again. ${e}');
+    }
   }
 
   @override
@@ -146,7 +213,43 @@ class _MyHomePageState extends State<BasicUserInfo> {
               ),
               keyboardType: TextInputType.text,
             ),
-            const SizedBox(height: 16.0), // Spacing between text fields
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: emailController,
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Please enter your Email',
+                hintStyle: const TextStyle(
+                  color: Colors.black,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                focusedBorder: border,
+                enabledBorder: border,
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: passwordController,
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Please enter your Password',
+                hintStyle: const TextStyle(
+                  color: Colors.black,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                focusedBorder: border,
+                enabledBorder: border,
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            const SizedBox(height: 16.0),// Spacing between text fields
             TextField(
               controller: ageController,
               style: const TextStyle(
@@ -252,5 +355,10 @@ class _MyHomePageState extends State<BasicUserInfo> {
         ),
       ),
     );
+  }
+
+  Future<void> storeToken(String token) async {
+    var box = Hive.box('authBox');
+    await box.put('jwtToken', token);
   }
 }
