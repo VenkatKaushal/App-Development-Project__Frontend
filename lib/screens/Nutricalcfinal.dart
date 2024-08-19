@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'splash_screen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Nutricalc extends StatefulWidget {
   const Nutricalc({super.key});
@@ -21,7 +24,7 @@ class _Nutricalcstate extends State<Nutricalc> {
   Iterable<Widget> getSuggestions(SearchController controller) {
     final String input = controller.value.text;
     return Foods.values.where((Foods food) => food.label.contains(input)).map(
-      (Foods filteredFood) => ListTile(
+          (Foods filteredFood) => ListTile(
         title: Text(filteredFood.label),
         trailing: IconButton(
           icon: const Icon(Icons.add),
@@ -41,15 +44,70 @@ class _Nutricalcstate extends State<Nutricalc> {
     );
   }
 
+  Future<void> sendFoodItemsToServer() async {
+    try {
+      // Retrieve token from Hive
+      var box = await Hive.openBox('authBox');
+      String? token = box.get('jwtToken');
+
+      if (token == null) {
+        _showErrorDialog('Authorization token not found. Please log in again.');
+        return;
+      }
+
+      // Prepare URL and data
+      final url = Uri.parse('http://10.0.2.2:3000/api/nutrients/daily-calculate');
+
+      // Collect all food items from the meal blocks
+      final List<String> allFoodItems = itemsPerCard
+          .expand((mealList) => mealList)
+          .map((item) => item.toLowerCase()) // Convert each item to lowercase
+          .toList();
+      print("Food Items: $allFoodItems");
+
+      final Map<String, dynamic> data = {
+        'foodItems': allFoodItems,
+      };
+      print("JSON: ${jsonEncode(data)}");
+      // Make the HTTP POST request
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': '$token'
+        },
+        body: jsonEncode(data),
+      );
+
+      print("UpdateNutrients Response Status Code: ${response.statusCode}");
+      print("UpdateNutrients Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print('Data sent successfully');
+        // Optionally clear the itemsPerCard lists after sending data
+        setState(() {
+          itemsPerCard = [[], [], [], []]; // Resetting all meal blocks
+        });
+      } else {
+        print('Failed to send data. Server responded with status code ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending data: $e');
+      // Handle or display the error
+      _showErrorDialog('An error occurred while sending data. Please try again.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nutricalc',
-        style: TextStyle(
+        title: const Text(
+          'Nutricalc',
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.yellow,
-            fontSize: 36
+            fontSize: 36,
           ),
         ),
         backgroundColor: Colors.lightBlue,
@@ -79,10 +137,11 @@ class _Nutricalcstate extends State<Nutricalc> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await sendFoodItemsToServer();
                 Navigator.push(
                   context,
-              MaterialPageRoute(builder: (context) =>  SplashScreen()),
+                  MaterialPageRoute(builder: (context) => SplashScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -104,7 +163,7 @@ class _Nutricalcstate extends State<Nutricalc> {
     );
   }
 
-  Widget buildCard(int index, String day) {
+  Widget buildCard(int index, String mealTime) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -125,28 +184,44 @@ class _Nutricalcstate extends State<Nutricalc> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(day, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(mealTime, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Expanded(
                 child: ListView(
                   children: itemsPerCard[index]
                       .map((item) => ListTile(
-                            title: Text(item, style: const TextStyle(fontSize: 16)),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.remove, color: Colors.red),
-                              onPressed: () {
-                                setState(() {
-                                  itemsPerCard[index].remove(item);
-                                });
-                              },
-                            ),
-                          ))
+                    title: Text(item, style: const TextStyle(fontSize: 16)),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.remove, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          itemsPerCard[index].remove(item);
+                        });
+                      },
+                    ),
+                  ))
                       .toList(),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
@@ -173,5 +248,3 @@ enum Foods {
   const Foods(this.label);
   final String label;
 }
-
-// void main() => runApp(const MaterialApp(home: Nutricalc()));

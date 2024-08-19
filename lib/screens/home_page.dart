@@ -439,16 +439,14 @@ class DynamicCardView extends StatefulWidget {
 
 class _DynamicCardViewState extends State<DynamicCardView> {
   Future<Map<String, int>> _fetchNutritionData() async {
-    // Replace with actual token retrieval logic
     var box = await Hive.openBox('authBox');
     String? token = box.get('jwtToken');
 
     if (token == null) {
       _showErrorDialog('Authorization token not found. Please log in again.');
-
+      throw Exception('Authorization token not found.');
     }
 
-    // Fetch user profile
     final userResponse = await http.put(
       Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
       headers: {
@@ -461,11 +459,8 @@ class _DynamicCardViewState extends State<DynamicCardView> {
       final profileData = json.decode(userResponse.body);
       int age = profileData['profile']['age'];
       String gender = profileData['profile']['gender'];
-      int weight = profileData['profile']['weight'];
-
       String ageGroup = getAgeGroup(age);
 
-      // Fetch daily nutrients
       final dailyResponse = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/nutrients/daily'),
         headers: {
@@ -473,10 +468,10 @@ class _DynamicCardViewState extends State<DynamicCardView> {
           'x-auth-token': '$token',
         },
       );
+      print("Response: ${dailyResponse.body}");
+      print("DailyResponse: ${dailyResponse.statusCode}");
 
-      // Fetch standard nutrients
       final nutrients = ['Protein', 'Carbohydrates', 'Fats'];
-
       final standardResponses = await Future.wait(
         nutrients.map((nutrient) async {
           final standardResponse = await http.post(
@@ -499,10 +494,7 @@ class _DynamicCardViewState extends State<DynamicCardView> {
               standardData['value'] ?? 0,
             );
           } else {
-            return MapEntry(
-              nutrient.toLowerCase(),
-              0,
-            );
+            return MapEntry(nutrient.toLowerCase(), 0);
           }
         }),
       );
@@ -515,9 +507,19 @@ class _DynamicCardViewState extends State<DynamicCardView> {
 
       if (dailyResponse.statusCode == 200) {
         final dailyData = jsonDecode(dailyResponse.body);
-        dailyCarbohydrates = dailyData['carbohydrates'] ?? 0;
-        dailyFat = dailyData['fats'] ?? 0;
-        dailyProtein = dailyData['protein'] ?? 0;
+        final dailyNutrients = dailyData['dailyNutrients'] as List<dynamic>;
+
+        for (var nutrient in dailyNutrients) {
+          final String nutrientName = nutrient['name'];
+          final double amount = nutrient['amount'].toDouble();
+          if (nutrientName == "Carbohydrate, by difference") {
+            dailyCarbohydrates = amount.toInt();
+          } else if (nutrientName == "Total lipid (fat)") {
+            dailyFat = amount.toInt();
+          } else if (nutrientName == "Protein") {
+            dailyProtein = amount.toInt();
+          }
+        }
       }
 
       return {
