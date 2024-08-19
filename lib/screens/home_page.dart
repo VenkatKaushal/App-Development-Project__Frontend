@@ -2,12 +2,16 @@ import 'package:app_frontend/daily_nutrients.dart';
 import 'package:app_frontend/global_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 // import 'package:global_health_insights/screens/analysis_page.dart';
 import 'Login_Screen.dart';
 import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
 import 'analysis_page.dart';
 import 'package:app_frontend/required_nutrition.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class home_page extends StatefulWidget {
   const home_page({super.key});
@@ -17,9 +21,7 @@ class home_page extends StatefulWidget {
 
 class _home_pageState extends State<home_page> {
   int _currentIndex = 0;
-  UserData userData = UserData();
-  RequiredNutritionData requiredNutritionData = RequiredNutritionData();
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -32,18 +34,18 @@ class _home_pageState extends State<home_page> {
           MaterialPageRoute(builder: (context) => Nutricalc()),
         );
         break;
-      // case 1:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => CalculatorPage()),
-      //   );
-      //   break;
-      // case 2:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => SettingsPage()),
-      //   );
-      //   break;
+    // case 1:
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => CalculatorPage()),
+    //   );
+    //   break;
+    // case 2:
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => SettingsPage()),
+    //   );
+    //   break;
     }
   }
 
@@ -51,35 +53,34 @@ class _home_pageState extends State<home_page> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        appBar: AppBar(
-                automaticallyImplyLeading: false,
-                shadowColor: const Color.fromARGB(255, 120, 119, 119),
-                backgroundColor: Colors.lightBlueAccent,
-                title: const Text(
-                  'NutriGuide',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 41, 192, 46),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        shadowColor: const Color.fromARGB(255, 120, 119, 119),
+        backgroundColor: Colors.lightBlueAccent,
+        title: const Text(
+          'NutriGuide',
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 41, 192, 46),
+          ),
+        ),
+        centerTitle: true, // This centers the title in the AppBar
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(
                   ),
                 ),
-                centerTitle: true, // This centers the title in the AppBar
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.person),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfilePage(
-                            userData: UserData(),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
@@ -95,23 +96,23 @@ class _home_pageState extends State<home_page> {
                   ),),
               ],
             ),
-                        CardView(),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Handle Check status action
-                                  },
-                                  child: Text('Check Status'),
-                                ),
-                              ),
-                              SizedBox(width: 10), // Optional spacing between buttons
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
+            DynamicCardView(),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Handle Check status action
+                      },
+                      child: Text('Check Status'),
+                    ),
+                  ),
+                  SizedBox(width: 10), // Optional spacing between buttons
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => AnalysisPage()),
@@ -128,11 +129,11 @@ class _home_pageState extends State<home_page> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                      child: WaterWidget(),
+                    child: WaterWidget(),
                   ),
                   SizedBox(width: 10), // Optional spacing between button
                   Expanded(
-                      child: ExerciseWidget(),
+                    child: ExerciseWidget(),
                   )
                 ],
               ),
@@ -145,10 +146,10 @@ class _home_pageState extends State<home_page> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calculate),
             label: 'Calculator',
-),
+          ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.navigate_next),
-            label: 'Next Page',
+            icon: Icon(Icons.refresh),
+            label: 'Load Page',
           ),
         ],
         currentIndex: _currentIndex,
@@ -217,8 +218,8 @@ class _CardViewState extends State<CardView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildMacroColumn('Carbohydrates', nutritionData.dailyCarbohydrates ?? 0, requiredNutritionData.requiredCarbohydrates ?? 0, Colors.teal),
-                  _buildMacroColumn('Fat', nutritionData.dailyFat?? 0, requiredNutritionData.requiredFat ?? 0, Colors.purple),
+                  _buildMacroColumn('Carbohydrates', 55, 76, Colors.teal),
+                  _buildMacroColumn('Fat', (nutritionData.dailyFat)?.toDouble()?? 0, requiredNutritionData.requiredFat ?? 0, Colors.purple),
                   _buildMacroColumn('Protein', nutritionData.dailyProtein?? 0, requiredNutritionData.requiredProtein ?? 0, Colors.orange),
                 ],
               ),
@@ -231,7 +232,7 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  Widget _buildMacroColumn(String name, double current, double total, Color color) {
+  Widget _buildMacroColumn(String name, num current, num total, Color color) {
     return Column(
       children: [
         Text(
@@ -249,7 +250,7 @@ class _CardViewState extends State<CardView> {
               height: 80,
               width: 80,
               child: CircularProgressIndicator(
-                value: current,
+                value: current.toDouble(),
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation(color),
                 backgroundColor: color.withOpacity(0.2),
@@ -340,12 +341,12 @@ class _WaterWidgetState extends State<WaterWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.remove, color: Colors.red),
-                onPressed: () {
-                  if (_waterLiters > 0) {
-                    _decreaseWater();
+                  icon: Icon(Icons.remove, color: Colors.red),
+                  onPressed: () {
+                    if (_waterLiters > 0) {
+                      _decreaseWater();
+                    }
                   }
-                }
               ),
               IconButton(
                 icon: Icon(Icons.add, color: Colors.green),
@@ -420,6 +421,266 @@ class _ExerciseWidgetState extends State<ExerciseWidget> {
                 onPressed: _increaseWorkout,
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class DynamicCardView extends StatefulWidget {
+  const DynamicCardView({super.key});
+
+  @override
+  State<DynamicCardView> createState() => _DynamicCardViewState();
+}
+
+class _DynamicCardViewState extends State<DynamicCardView> {
+  Future<Map<String, int>> _fetchNutritionData() async {
+    // Replace with actual token retrieval logic
+    var box = await Hive.openBox('authBox');
+    String? token = box.get('jwtToken');
+
+    if (token == null) {
+      _showErrorDialog('Authorization token not found. Please log in again.');
+
+    }
+
+    // Fetch user profile
+    final userResponse = await http.put(
+      Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': '$token',
+      },
+    );
+
+    if (userResponse.statusCode == 200) {
+      final profileData = json.decode(userResponse.body);
+      int age = profileData['profile']['age'];
+      String gender = profileData['profile']['gender'];
+      int weight = profileData['profile']['weight'];
+
+      String ageGroup = getAgeGroup(age);
+
+      // Fetch daily nutrients
+      final dailyResponse = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/nutrients/daily'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': '$token',
+        },
+      );
+
+      // Fetch standard nutrients
+      final nutrients = ['Protein', 'Carbohydrates', 'Fats'];
+
+      final standardResponses = await Future.wait(
+        nutrients.map((nutrient) async {
+          final standardResponse = await http.post(
+            Uri.parse('http://10.0.2.2:3000/api/standard/nutritional-values'),
+            headers: {
+              'Content-Type': 'application/json',
+              'x-auth-token': '$token',
+            },
+            body: json.encode({
+              'age': ageGroup,
+              'gender': gender,
+              'nutrient': nutrient,
+            }),
+          );
+
+          if (standardResponse.statusCode == 200) {
+            final standardData = json.decode(standardResponse.body);
+            return MapEntry(
+              nutrient.toLowerCase(),
+              standardData['value'] ?? 0,
+            );
+          } else {
+            return MapEntry(
+              nutrient.toLowerCase(),
+              0,
+            );
+          }
+        }),
+      );
+
+      final nutrientMap = Map.fromEntries(standardResponses);
+
+      int dailyCarbohydrates = 0;
+      int dailyFat = 0;
+      int dailyProtein = 0;
+
+      if (dailyResponse.statusCode == 200) {
+        final dailyData = jsonDecode(dailyResponse.body);
+        dailyCarbohydrates = dailyData['carbohydrates'] ?? 0;
+        dailyFat = dailyData['fats'] ?? 0;
+        dailyProtein = dailyData['protein'] ?? 0;
+      }
+
+      return {
+        'carbohydrates': dailyCarbohydrates,
+        'fat': dailyFat,
+        'protein': dailyProtein,
+        'requiredCarbohydrates': nutrientMap['carbohydrates'] ?? 0,
+        'requiredFat': nutrientMap['fats'] ?? 0,
+        'requiredProtein': nutrientMap['protein'] ?? 0,
+      };
+    } else {
+      throw Exception('Failed to load user profile.');
+    }
+  }
+
+  String getAgeGroup(int age) {
+    if (age >= 1 && age <= 3) return '1-3 years';
+    if (age >= 4 && age <= 8) return '4-8 years';
+    if (age >= 9 && age <= 13) return '9-13 years';
+    if (age >= 14 && age <= 18) return '14-18 years';
+    if (age >= 19 && age <= 50) return '19-50 years';
+    return '51+ years';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, int>>(
+      future: _fetchNutritionData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData) {
+          return Center(child: Text('No data available'));
+        } else {
+          final data = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Macros',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildMacroColumn(
+                          'Carbohydrates',
+                          data['carbohydrates'] ?? 0,
+                          data['requiredCarbohydrates'] ?? 0,
+                          Colors.teal,
+                        ),
+                        _buildMacroColumn(
+                          'Fat',
+                          data['fat'] ?? 0,
+                          data['requiredFat'] ?? 0,
+                          Colors.purple,
+                        ),
+                        _buildMacroColumn(
+                          'Protein',
+                          data['protein'] ?? 0,
+                          data['requiredProtein'] ?? 0,
+                          Colors.orange,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    _buildDotsIndicator(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildMacroColumn(String name, num current, num total, Color color) {
+    return Column(
+      children: [
+        Text(
+          name,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 8),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              height: 80,
+              width: 80,
+              child: CircularProgressIndicator(
+                value: total > 0 ? current / total : 0,
+                strokeWidth: 8,
+                valueColor: AlwaysStoppedAnimation(color),
+                backgroundColor: color.withOpacity(0.2),
+              ),
+            ),
+            Text(
+              '$current/\n$total\ng',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 8),
+        Text('${total - current}g left'),
+      ],
+    );
+  }
+
+  Widget _buildDotsIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildDot(Colors.blue),
+        _buildDot(Colors.grey),
+        _buildDot(Colors.grey),
+      ],
+    );
+  }
+
+  Widget _buildDot(Color color) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 4),
+      height: 8,
+      width: 8,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
           ),
         ],
       ),

@@ -6,6 +6,7 @@ class NutritionData {
   }
 
   NutritionData._internal();
+
   double? calories;
   double? dailyProtein;
   double? dailyCarbohydrates;
@@ -48,3 +49,4 @@ class NutritionData {
     this.dailyTotalNutrition = dailyTotalNutrition;
   }
 }
+
