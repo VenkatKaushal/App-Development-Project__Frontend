@@ -28,6 +28,15 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+    signingConfigs {
+        release {
+            keyAlias 'NutriGuide'  // Use the alias from the keytool command
+            keyPassword 'Kaushal'  // Use the password from the keytool command
+            storeFile file('C:/Users/vkthi/my-release-key.jks')  // Correct file path
+            storePassword 'Kaushal'  // Use the password from the keytool command
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
