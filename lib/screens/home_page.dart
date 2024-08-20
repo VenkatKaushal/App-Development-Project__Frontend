@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 // import 'package:global_health_insights/screens/analysis_page.dart';
 import 'Login_Screen.dart';
+import 'Suggestions.dart';
 import 'profile_page.dart';
 import 'Nutricalcfinal.dart';
 import 'analysis_page.dart';
@@ -104,9 +105,12 @@ class _home_pageState extends State<home_page> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Handle Check status action
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context)=> SuggestionsPage())
+                        );
                       },
-                      child: Text('Check Status'),
+                      child: Text('Suggestions'),
                     ),
                   ),
                   SizedBox(width: 10), // Optional spacing between buttons
@@ -448,7 +452,7 @@ class _DynamicCardViewState extends State<DynamicCardView> {
     }
 
     final userResponse = await http.put(
-      Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+      Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': '$token',
@@ -462,7 +466,7 @@ class _DynamicCardViewState extends State<DynamicCardView> {
       String ageGroup = getAgeGroup(age);
 
       final dailyResponse = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/nutrients/daily'),
+        Uri.parse('https://app-development-project-backend.onrender.com/api/nutrients/daily'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': '$token',
@@ -475,7 +479,7 @@ class _DynamicCardViewState extends State<DynamicCardView> {
       final standardResponses = await Future.wait(
         nutrients.map((nutrient) async {
           final standardResponse = await http.post(
-            Uri.parse('http://10.0.2.2:3000/api/standard/nutritional-values'),
+            Uri.parse('https://app-development-project-backend.onrender.com/api/standard/nutritional-values'),
             headers: {
               'Content-Type': 'application/json',
               'x-auth-token': '$token',

@@ -2,6 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:hive/hive.dart';
+import 'dart:async';
 
 class AnalysisPage extends StatefulWidget {
   @override
@@ -12,42 +14,196 @@ class _AnalysisPageState extends State<AnalysisPage> {
   Map<String, dynamic> requiredNutritionData = {};
   Map<String, dynamic> nutritionData = {};
   Map<String, dynamic> deficitData = {};
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchData();
+    // Set up a timer to refresh data every 5 minutes (300 seconds)
+    _timer = Timer.periodic(Duration(minutes: 5), (Timer t) => fetchData());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
   }
 
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/api/nutrition'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    try {
+      var box = await Hive.openBox('authBox');
+      String? token = box.get('jwtToken');
+
+      if (token == null) {
+        _showErrorDialog('Authorization token not found. Please log in again.');
+        throw Exception('Authorization token not found.');
+      }
+
+      // Fetch user profile data
+      final userResponse = await http.put(
+        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': '$token',
+        },
+      );
+
+      if (userResponse.statusCode != 200) {
+        throw Exception('Failed to load user profile.');
+      }
+      final profileData = json.decode(userResponse.body);
+      int age = profileData['profile']['age'];
+      String gender = profileData['profile']['gender'];
+      String ageGroup = getAgeGroup(age);
+
+      // Fetch daily nutrients data
+      final dailyResponse = await http.get(
+        Uri.parse('https://app-development-project-backend.onrender.com/api/nutrients/daily'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': '$token',
+        },
+      );
+
+      if (dailyResponse.statusCode != 200) {
+        throw Exception('Failed to load daily nutrients data.');
+      }
+      final dailyData = json.decode(dailyResponse.body);
+      final dailyNutrients = dailyData['dailyNutrients'] as List<dynamic>;
+
+      Map<String, double> dailyNutrientMap = {
+        'protein': 0,
+        'carbohydrates': 0,
+        'fats': 0,
+        'fiber': 0,
+        'calcium': 0,
+        'iron': 0,
+      };
+
+      for (var nutrient in dailyNutrients) {
+        final String nutrientName = nutrient['name'];
+        final double amount = nutrient['amount'].toDouble();
+        if (nutrientName == "Protein") {
+          dailyNutrientMap['protein'] = amount;
+        } else if (nutrientName == "Carbohydrate, by difference") {
+          dailyNutrientMap['carbohydrates'] = amount;
+        } else if (nutrientName == "Total lipid (fat)") {
+          dailyNutrientMap['fats'] = amount;
+        } else if (nutrientName == "Dietary Fiber") {
+          dailyNutrientMap['fiber'] = amount;
+        } else if (nutrientName == "Calcium, Ca") {
+          dailyNutrientMap['calcium'] = amount;
+        } else if (nutrientName == "Iron, Fe") {
+          dailyNutrientMap['iron'] = amount;
+        }
+      }
+
+      // Fetch standard nutritional values
+      final nutrients = ['Protein', 'Carbohydrates', 'Fats', 'Fiber', 'Calcium', 'Iron'];
+      final standardResponses = await Future.wait(
+        nutrients.map((nutrient) async {
+          final standardResponse = await http.post(
+            Uri.parse('https://app-development-project-backend.onrender.com/api/standard/nutritional-values'),
+            headers: {
+              'Content-Type': 'application/json',
+              'x-auth-token': '$token',
+            },
+            body: json.encode({
+              'age': ageGroup,
+              'gender': gender,
+              'nutrient': nutrient,
+            }),
+          );
+
+          if (standardResponse.statusCode == 200) {
+            final standardData = json.decode(standardResponse.body);
+            return MapEntry(
+              nutrient.toLowerCase(),
+              standardData['value'] ?? 0,
+            );
+          } else {
+            return MapEntry(nutrient.toLowerCase(), 0);
+          }
+        }),
+      );
+
+      final nutrientMap = Map.fromEntries(standardResponses);
+
       setState(() {
-        requiredNutritionData = data['requiredNutrients'];
-        nutritionData = data['nutritionIntake'];
-        deficitData = calculateDeficit(data['requiredNutrients'], data['nutritionIntake']);
+        requiredNutritionData = {
+          'protein': nutrientMap['protein'] ?? 0,
+          'carbohydrates': nutrientMap['carbohydrates'] ?? 0,
+          'fats': nutrientMap['fats'] ?? 0,
+          'fiber': nutrientMap['fiber'] ?? 0,
+          'calcium': nutrientMap['calcium'] ?? 0,
+          'iron': nutrientMap['iron'] ?? 0,
+        };
+        nutritionData = dailyNutrientMap;
+        deficitData = calculateDeficit(requiredNutritionData, nutritionData);
       });
-    } else {
-      throw Exception('Failed to load nutrition data');
+    } catch (e) {
+      print('Error fetching data: $e');
     }
   }
 
   Map<String, dynamic> calculateDeficit(Map<String, dynamic> required, Map<String, dynamic> intake) {
     Map<String, dynamic> deficit = {};
     required.forEach((key, value) {
-      deficit[key] = value - intake[key];
+      if(key =="calcium" || key == "iron")
+        {
+          deficit[key] = value - (intake[key] ?? 0)/1000;
+        }
+      else { deficit[key] = value - (intake[key] ?? 0); }
     });
     return deficit;
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Show a loading indicator while data is being fetched
+    if (requiredNutritionData.isEmpty || nutritionData.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Analysis Page'),
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Analysis Page'),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              fetchData(); // Manually refresh the data
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -65,12 +221,12 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     minX: 0,
                     maxX: 10,
                     minY: 0,
-                    maxY: requiredNutritionData['calories']?.toDouble() ?? 2500.0,
+                    maxY: requiredNutritionData['protein']?.toDouble() ?? 2500.0,
                     lineBarsData: [
                       LineChartBarData(
                         spots: [
-                          FlSpot(0, requiredNutritionData['calories']?.toDouble() ?? 0),
-                          FlSpot(1, nutritionData['calories']?.toDouble() ?? 0),
+                          FlSpot(0, requiredNutritionData['protein']?.toDouble() ?? 0),
+                          FlSpot(1, nutritionData['protein']?.toDouble() ?? 0),
                         ],
                         isCurved: true,
                         color: Colors.blue,
@@ -102,17 +258,12 @@ class _AnalysisPageState extends State<AnalysisPage> {
                         ],
                       ),
                       Divider(),
-                      buildDataRow('Calories', requiredNutritionData['calories'].toString(), nutritionData['calories'].toString(), deficitData['calories'].toString()),
-                      buildDataRow('Protein', requiredNutritionData['protein'].toString(), nutritionData['protein'].toString(), deficitData['protein'].toString()),
-                      buildDataRow('Carbs', requiredNutritionData['carbs'].toString(), nutritionData['carbs'].toString(), deficitData['carbs'].toString()),
-                      buildDataRow('Fat', requiredNutritionData['fat'].toString(), nutritionData['fat'].toString(), deficitData['fat'].toString()),
-                      buildDataRow('Fiber', requiredNutritionData['fiber'].toString(), nutritionData['fiber'].toString(), deficitData['fiber'].toString()),
-                      buildDataRow('Calcium', requiredNutritionData['calcium'].toString(), nutritionData['calcium'].toString(), deficitData['calcium'].toString()),
-                      buildDataRow('Iron', requiredNutritionData['iron'].toString(), nutritionData['iron'].toString(), deficitData['iron'].toString()),
-                      buildDataRow('Vitamin A', requiredNutritionData['vitaminA'].toString(), nutritionData['vitaminA'].toString(), deficitData['vitaminA'].toString()),
-                      buildDataRow('Vitamin B6', requiredNutritionData['vitaminB6'].toString(), nutritionData['vitaminB6'].toString(), deficitData['vitaminB6'].toString()),
-                      buildDataRow('Vitamin D', requiredNutritionData['vitaminD'].toString(), nutritionData['vitaminD'].toString(), deficitData['vitaminD'].toString()),
-                      buildDataRow('Vitamin E', requiredNutritionData['vitaminE'].toString(), nutritionData['vitaminE'].toString(), deficitData['vitaminE'].toString()),
+                      buildDataRow('Protein', requiredNutritionData['protein'].toString(), nutritionData['protein'].toString(), deficitData['protein']?.toString() ?? '0'),
+                      buildDataRow('Carbohydrates', requiredNutritionData['carbohydrates'].toString(), nutritionData['carbohydrates'].toString(), deficitData['carbohydrates']?.toString() ?? '0'),
+                      buildDataRow('Fats', requiredNutritionData['fats'].toString(), nutritionData['fats'].toString(), deficitData['fats']?.toString() ?? '0'),
+                      buildDataRow('Fiber', requiredNutritionData['fiber'].toString(), nutritionData['fiber'].toString(), deficitData['fiber']?.toString() ?? '0'),
+                      buildDataRow('Calcium', requiredNutritionData['calcium'].toString(), (nutritionData['calcium']/1000).toStringAsFixed(2), deficitData['calcium']?.toStringAsFixed(2) ?? '0'),
+                      buildDataRow('Iron', requiredNutritionData['iron'].toString(), (nutritionData['iron']/1000).toStringAsFixed(2), deficitData['iron']?.toStringAsFixed(2) ?? '0'),
                     ],
                   ),
                 ),
@@ -137,7 +288,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
         children: [
           Expanded(child: Text(nutrient)),
           Expanded(child: Text(required)),
@@ -146,5 +297,14 @@ class _AnalysisPageState extends State<AnalysisPage> {
         ],
       ),
     );
+  }
+
+  String getAgeGroup(int age) {
+    if (age >= 1 && age <= 3) return '1-3 years';
+    if (age >= 4 && age <= 8) return '4-8 years';
+    if (age >= 9 && age <= 13) return '9-13 years';
+    if (age >= 14 && age <= 18) return '14-18 years';
+    if (age >= 19 && age <= 50) return '19-50 years';
+    return '51+ years';
   }
 }

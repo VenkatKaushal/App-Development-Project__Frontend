@@ -101,7 +101,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     // Send the PUT request
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/auth/forget'),
+        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/forget'),
         headers: {
           'Content-Type': 'application/json',
         },

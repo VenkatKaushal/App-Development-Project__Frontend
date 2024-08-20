@@ -103,7 +103,7 @@ class _MyHomePageState extends State<BasicUserInfo> {
     try {
       print("Body: ${userName}, ${email}, ${password}");
       final registerResponse = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/register'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -122,7 +122,7 @@ class _MyHomePageState extends State<BasicUserInfo> {
         await storeToken(token);
 
         final profileResponse = await http.put(
-          Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+          Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
           headers: {
             'Content-Type': 'application/json',
             'x-auth-token': token,

@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       print("Token: $token");
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': '$token',
@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/auth/profile'),
+        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': '$token',

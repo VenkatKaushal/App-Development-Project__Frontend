@@ -56,7 +56,7 @@ class _Nutricalcstate extends State<Nutricalc> {
       }
 
       // Prepare URL and data
-      final url = Uri.parse('http://10.0.2.2:3000/api/nutrients/daily-calculate');
+      final url = Uri.parse('https://app-development-project-backend.onrender.com/api/nutrients/daily-calculate');
 
       // Collect all food items from the meal blocks
       final List<String> allFoodItems = itemsPerCard
@@ -228,23 +228,58 @@ class _Nutricalcstate extends State<Nutricalc> {
 }
 
 enum Foods {
-  red('Dal'),
-  orange('Roti'),
-  yellow('Rice'),
-  green('Egg'),
-  blue('Chicken(100 gm)'),
-  indigo('Dosa'),
-  violet('Idli'),
-  purple('Sambar(1 small bowl[100 ml])'),
-  pink('Dahi(1 small bowl[100 ml])'),
-  silver('Vada'),
-  gold('Onion Uttapam'),
-  beige('Pongal(1 small bowl)'),
-  brown('Aloo Paratha'),
-  grey('Milk (100 ml = 1 glass)'),
-  black('Paneer(100 gm)'),
-  white('Rajma(2 small bowl)');
+  apple('Apple'),
+  dosa('Dosa'),
+  BasmatiRice('Basmati Rice'),
+  Chutney('Chutney'),
+  puri('Puri'),
+  chappatti('Chappatti'),
+  paratha('Paratha'),
+  naan('Naan'),
+  Dal('Dal'),
+  Kidneybeans('Kidney Beans'),
+  Mango('Mango'),
+  Banana('Banana'),
+  Orange('Orange'),
+  Pomegranate('Pomegranate'),
+  Papaya('Papaya'),
+  Guava('Guava'),
+  Pineapple('Pineapple'),
+  Grapes('Grapes'),
+  Watermelon('Watermelon'),
+  Muskmelon('Muskmelon'),
+  Mosambi('Mosambi'),
+  Lychee('Lychee'),
+  Cherries('Cherries'),
+  Plum('Plum'),
+  Kiwi('Kiwi'),
+  Pear('Pear'),
+  Peach('Peach'),
+  Blackberries('Blackberries'),
+  Coconut('Coconut'),
+  Lemon('Lemon'),
+  Raspberries('Raspberries'),
+  Strawberries('Strawberries'),
+  Blueberries('Blueberries'),
+  Milk('Milk'),
+  paneer('Paneer'),
+  Buttermilk('Buttermilk'),
+  Almonds('Almonds'),
+  Cashews('Cashews'),
+  Raisins('Raisins'),
+  Pistachios('Pistachios'),
+  Walnuts('Walnuts'),
+  Peanuts('Peanuts'),
+  Dates('Dates'),
+  Driedfigs('Dried Figs'),
+  Samosa('Samosa'),
+  Papad('Papad'),
+  Idli('Idli'),
+  Bananachips('Banana Chips'),
+  MasalaDosa('Masala Dosa'),
+  Chickencurry('Chicken Curry');
 
   const Foods(this.label);
   final String label;
 }
+
