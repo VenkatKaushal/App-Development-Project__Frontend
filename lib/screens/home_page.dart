@@ -354,7 +354,11 @@ class _WaterWidgetState extends State<WaterWidget> {
               ),
               IconButton(
                 icon: Icon(Icons.add, color: Colors.green),
-                onPressed: _increaseWater,
+                onPressed: () {
+                  if (_waterLiters < 11) {
+                    _increaseWater();
+                  }
+                },
               ),
             ],
           ),
@@ -406,7 +410,7 @@ class _ExerciseWidgetState extends State<ExerciseWidget> {
           ),
           SizedBox(height: 4),
           Text(
-            '$_workoutHours L',
+            '$_workoutHours H',
             style: TextStyle(fontSize: 24),
           ),
           Row(
@@ -422,7 +426,11 @@ class _ExerciseWidgetState extends State<ExerciseWidget> {
               ),
               IconButton(
                 icon: Icon(Icons.add, color: Colors.green),
-                onPressed: _increaseWorkout,
+                onPressed: () {
+                  if (_workoutHours < 9) {
+                    _increaseWorkout();
+                  }
+                },
               ),
             ],
           ),
@@ -659,8 +667,6 @@ class _DynamicCardViewState extends State<DynamicCardView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildDot(Colors.blue),
-        _buildDot(Colors.grey),
-        _buildDot(Colors.grey),
       ],
     );
   }

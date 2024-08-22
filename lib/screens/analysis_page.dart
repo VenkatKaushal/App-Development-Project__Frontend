@@ -14,19 +14,26 @@ class _AnalysisPageState extends State<AnalysisPage> {
   Map<String, dynamic> requiredNutritionData = {};
   Map<String, dynamic> nutritionData = {};
   Map<String, dynamic> deficitData = {};
+  var requiredTotalNutrition;
+  final dailyTotalNutrition = List<double>.filled(7, 0);
+  int weekday = 0;
+  late double maxNutrientValue;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchData();
-    // Set up a timer to refresh data every 5 minutes (300 seconds)
+    final now = DateTime.parse(DateTime.now().toString());
+    weekday = now.weekday;
     _timer = Timer.periodic(Duration(minutes: 5), (Timer t) => fetchData());
+    maxNutrientValue = dailyTotalNutrition.reduce((a, b) => a > b? a : b);
+    requiredTotalNutrition = 0;
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -39,10 +46,10 @@ class _AnalysisPageState extends State<AnalysisPage> {
         _showErrorDialog('Authorization token not found. Please log in again.');
         throw Exception('Authorization token not found.');
       }
-
-      // Fetch user profile data
+      
       final userResponse = await http.put(
-        Uri.parse('https://app-development-project-backend.onrender.com/api/auth/profile'),
+        Uri.parse(
+            'https://app-development-project-backend.onrender.com/api/auth/profile'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': '$token',
@@ -59,7 +66,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
       // Fetch daily nutrients data
       final dailyResponse = await http.get(
-        Uri.parse('https://app-development-project-backend.onrender.com/api/nutrients/daily'),
+        Uri.parse(
+            'https://app-development-project-backend.onrender.com/api/nutrients/daily'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': '$token',
@@ -99,12 +107,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
         }
       }
 
-      // Fetch standard nutritional values
-      final nutrients = ['Protein', 'Carbohydrates', 'Fats', 'Fiber', 'Calcium', 'Iron'];
+      final nutrients = [
+        'Protein',
+        'Carbohydrates',
+        'Fats',
+        'Fiber',
+        'Calcium',
+        'Iron'
+      ];
       final standardResponses = await Future.wait(
         nutrients.map((nutrient) async {
           final standardResponse = await http.post(
-            Uri.parse('https://app-development-project-backend.onrender.com/api/standard/nutritional-values'),
+            Uri.parse(
+                'https://app-development-project-backend.onrender.com/api/standard/nutritional-values'),
             headers: {
               'Content-Type': 'application/json',
               'x-auth-token': '$token',
@@ -139,22 +154,39 @@ class _AnalysisPageState extends State<AnalysisPage> {
           'calcium': nutrientMap['calcium'] ?? 0,
           'iron': nutrientMap['iron'] ?? 0,
         };
+        requiredTotalNutrition = (nutrientMap['protein'] ?? 0) * 4 +
+            (nutrientMap['carbohydrates'] ?? 0) * 4 +
+            (nutrientMap['fats']?? 0) +
+            (nutrientMap['calcium'] ?? 0) / 1000 +
+            (nutrientMap['iron'] ?? 0) / 1000 +
+            (nutrientMap['fiber'] ?? 0) * 2;
+        });
+
+        dailyTotalNutrition[weekday] = (dailyNutrientMap['protein'] ?? 0) * 4 +
+          (dailyNutrientMap['carbohydrates'] ?? 0) * 4 +
+          (dailyNutrientMap['fats'] ?? 0) +
+          (dailyNutrientMap['calcium'] ?? 0) / 1000 +
+          (dailyNutrientMap['iron'] ?? 0) / 1000 +
+           (dailyNutrientMap['fiber'] ?? 0) * 2;
         nutritionData = dailyNutrientMap;
         deficitData = calculateDeficit(requiredNutritionData, nutritionData);
-      });
+
+
     } catch (e) {
       print('Error fetching data: $e');
     }
   }
 
-  Map<String, dynamic> calculateDeficit(Map<String, dynamic> required, Map<String, dynamic> intake) {
+  Map<String, dynamic> calculateDeficit(Map<String, dynamic> required,
+      Map<String, dynamic> intake) {
     Map<String, dynamic> deficit = {};
     required.forEach((key, value) {
-      if(key =="calcium" || key == "iron")
-        {
-          deficit[key] = value - (intake[key] ?? 0)/1000;
-        }
-      else { deficit[key] = value - (intake[key] ?? 0); }
+      if (key == "calcium" || key == "iron") {
+        ((intake[key] ?? 0) / 1000)-value > 0 ? deficit[key] = 0 : deficit[key] = value - ((intake[key] ?? 0) / 1000);
+      }
+      else {
+        (intake[key] ?? 0) - value > 0 ? deficit[key] = 0 : deficit[key] = value - (intake[key] ?? 0);
+      }
     });
     return deficit;
   }
@@ -162,21 +194,41 @@ class _AnalysisPageState extends State<AnalysisPage> {
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
+      builder: (context) =>
+          AlertDialog(
+            title: Text('Error'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<FlSpot> spots = [
+      FlSpot(0, requiredTotalNutrition.toDouble() ?? 0),
+      FlSpot(1, (requiredTotalNutrition.toDouble() ?? 0) + 10),  // Example variation
+      FlSpot(2, (requiredTotalNutrition.toDouble() ?? 0) + 20),  // Example variation
+      FlSpot(3, (requiredTotalNutrition.toDouble() ?? 0) + 30),  // Example variation
+      FlSpot(4, (requiredTotalNutrition.toDouble() ?? 0) + 40),  // Example variation
+      FlSpot(5, (requiredTotalNutrition.toDouble() ?? 0) + 50),  // Example variation
+      FlSpot(6, (requiredTotalNutrition.toDouble() ?? 0) + 60),  // Example variation
+    ];
+
+    final List<FlSpot> spots1 = [
+      FlSpot(0, (dailyTotalNutrition[0] ?? 0) + 0),
+      FlSpot(1, (dailyTotalNutrition[1] ?? 0) + 10),  // Example variation
+      FlSpot(2, (dailyTotalNutrition[2] ?? 0) + 20),  // Example variation
+      FlSpot(3, (dailyTotalNutrition[3] ?? 0) + 30),  // Example variation
+      FlSpot(4, (dailyTotalNutrition[4] ?? 0) + 40),  // Example variation
+      FlSpot(5, (dailyTotalNutrition[5] ?? 0) + 50),  // Example variation
+      FlSpot(6, (dailyTotalNutrition[6] ?? 0) + 60),  // Example variation
+    ];
     // Show a loading indicator while data is being fetched
     if (requiredNutritionData.isEmpty || nutritionData.isEmpty) {
       return Scaffold(
@@ -219,20 +271,24 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     titlesData: FlTitlesData(show: true),
                     borderData: FlBorderData(show: true),
                     minX: 0,
-                    maxX: 10,
+                    maxX: 6,
                     minY: 0,
-                    maxY: requiredNutritionData['protein']?.toDouble() ?? 2500.0,
+                    maxY: (maxNutrientValue.toDouble() ?? 0) + 2600,
                     lineBarsData: [
                       LineChartBarData(
-                        spots: [
-                          FlSpot(0, requiredNutritionData['protein']?.toDouble() ?? 0),
-                          FlSpot(1, nutritionData['protein']?.toDouble() ?? 0),
-                        ],
-                        isCurved: true,
+                        spots: spots,
+                        isCurved: false,
                         color: Colors.blue,
                         barWidth: 3,
-                        dotData: FlDotData(show: true),
+                        dotData: FlDotData(show: true),  // Show plot points
                         belowBarData: BarAreaData(show: false),
+                      ),
+                      LineChartBarData(
+                        spots: spots1,
+                        isCurved: false,
+                        color: Colors.red,
+                        barWidth: 3,
+                        dotData: FlDotData(show: false),
                       ),
                     ],
                   ),
@@ -258,12 +314,30 @@ class _AnalysisPageState extends State<AnalysisPage> {
                         ],
                       ),
                       Divider(),
-                      buildDataRow('Protein', requiredNutritionData['protein'].toString(), nutritionData['protein'].toString(), deficitData['protein']?.toString() ?? '0'),
-                      buildDataRow('Carbohydrates', requiredNutritionData['carbohydrates'].toString(), nutritionData['carbohydrates'].toString(), deficitData['carbohydrates']?.toString() ?? '0'),
-                      buildDataRow('Fats', requiredNutritionData['fats'].toString(), nutritionData['fats'].toString(), deficitData['fats']?.toString() ?? '0'),
-                      buildDataRow('Fiber', requiredNutritionData['fiber'].toString(), nutritionData['fiber'].toString(), deficitData['fiber']?.toString() ?? '0'),
-                      buildDataRow('Calcium', requiredNutritionData['calcium'].toString(), (nutritionData['calcium']/1000).toStringAsFixed(2), deficitData['calcium']?.toStringAsFixed(2) ?? '0'),
-                      buildDataRow('Iron', requiredNutritionData['iron'].toString(), (nutritionData['iron']/1000).toStringAsFixed(2), deficitData['iron']?.toStringAsFixed(2) ?? '0'),
+                      buildDataRow('Protein',
+                          requiredNutritionData['protein'].toString(),
+                          nutritionData['protein'].toString(),
+                          deficitData['protein']?.toString() ?? '0'),
+                      buildDataRow('Carbohydrates',
+                          requiredNutritionData['carbohydrates'].toString(),
+                          nutritionData['carbohydrates'].toString(),
+                          deficitData['carbohydrates']?.toString() ?? '0'),
+                      buildDataRow(
+                          'Fats', requiredNutritionData['fats'].toString(),
+                          nutritionData['fats'].toString(),
+                          deficitData['fats']?.toString() ?? '0'),
+                      buildDataRow(
+                          'Fiber', requiredNutritionData['fiber'].toString(),
+                          nutritionData['fiber'].toString(),
+                          deficitData['fiber']?.toString() ?? '0'),
+                      buildDataRow('Calcium',
+                          requiredNutritionData['calcium'].toString(),
+                          (nutritionData['calcium'] / 1000).toStringAsFixed(2),
+                          deficitData['calcium']?.toStringAsFixed(2) ?? '0'),
+                      buildDataRow(
+                          'Iron', requiredNutritionData['iron'].toString(),
+                          (nutritionData['iron'] / 1000).toStringAsFixed(2),
+                          deficitData['iron']?.toStringAsFixed(2) ?? '0'),
                     ],
                   ),
                 ),
@@ -284,16 +358,18 @@ class _AnalysisPageState extends State<AnalysisPage> {
     );
   }
 
-  Widget buildDataRow(String nutrient, String required, String yours, String deficit) {
+  Widget buildDataRow(String nutrient, String required, String yours,
+      String deficit) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(child: Text(nutrient)),
           Expanded(child: Text(required)),
           Expanded(child: Text(yours)),
-          Expanded(child: Text(deficit, style: TextStyle(color: deficit.startsWith('-') ? Colors.red : Colors.green))),
+          Expanded(child: Text(deficit, style: TextStyle(
+              color: deficit=="0" ? Colors.red : Colors.green))),
         ],
       ),
     );
@@ -307,4 +383,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
     if (age >= 19 && age <= 50) return '19-50 years';
     return '51+ years';
   }
+
+
 }
+
+
