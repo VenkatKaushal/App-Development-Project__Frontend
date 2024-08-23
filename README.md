@@ -8,6 +8,13 @@
 The updated APK is uploaded in Front-End Github Repo as well as in Back-End GitHub repo....
 Name of APK is NutriGuide.apk
 
+# Directions to use the app:
+When you open the app,there will be an Opening screen which shows either login or signup options.In that you have to select sign up option if you haven't made an account and select login if otherwise.After you finish that process you will be directed to a home page screen,from there you can click the icon on the bottom left which is the nutrient calculator icon,there you will have 4 cards breakfast,lunch,snacks and dinner.Select a card in which you want to add food items,then from the search bar search the foods you've eaten for the day(there will be 170 food items for now),Remember to start the search with CAPITAL
+letters and when you get your food item,select the plus icon on the right of every food item to select it.Remember if you have eaten one food item for example ROTI multiple times add that food items multiple times in the search bar,once you have added your food intake for the day select calculate,it will redirect you to the HOME PAGE.Then you go to the ANALYSIS PAGE which is on the middle right of the home screen.
+On clicking that you will see a GRAPH it shows your weekly comparison of your foods.Blue one is the average food intake and red one is yours.REMEMBER if you started using the app on wednesday,the red line of the graph will be touching zero because as you started on wednesday,there is no data for monday and tuesday.In the analysis page itself you will see a card whihc shows your required,your nutrients and deficit.Lastly you can see the suggestions page on the middle left of the home page,to see which foods should/should not be taken when you are in a deficit or excess of a particular nutrient.
+HOPE YOU LIKE THIS APP
+The descriptive part starts from below:-
+
 Login Screen:
 
 Overview
@@ -131,3 +138,11 @@ o	The data-fetching code is streamlined using Future.wait to gather required nut
 o	The code effectively handles state changes using setState.
 3.	UI Components:
 o	The buildHeaderCell and buildDataRow functions make it easy to create the table headers and rows.
+
+
+Contribution: Kaushal(35%)(Backend and linking frontend with backend)
+              Havish(18%) (frontend)
+              Shankhesh(18%) (frontend)
+              Manan(18%) (frontend)
+              Harshit(10%) (frontend)
+              Amaan(1%)
